@@ -40,4 +40,13 @@ if __name__=="__main__":
     plt.show()
 
 
-    edgelistB = []
+    edgelistB = [("cow", "rabbit"), ("cow", "fish"), ("cow", "oyster"), ("cow", "oyster"), ("cow", "broccoli"), ("cow", "onion"), 
+("cow", "apple"), ("rabbit", "fish"), ("rabbit", "oyster"), ("rabbit", "broccoli"), ("rabbit", "onion"),  
+("rabbit", "apple"), ("fish", "oyster"), ("fish", "broccoli"), ("fish", "onion"), ("fish", "apple"), 
+("oyster", "broccoli"), ("oyster", "onion"), ("oyster", "apple"), ("broccoli", "onion"), ("broccoli", "apple"), 
+("onion", "apple"), 
+("horse", "dog"), ("horse", "dolphin"), ("horse", "fern"), ("dog", "dolphin"), ("dog", "fern"), 
+("dolphin", "fern"), 
+("cow", "broccoli", "apple"), ("cow", "onion", "apple"), ("rabbit", "broccoli", "apple"),  
+("rabbit", "onion", "apple"), ("fish", "broccoli", "apple"), ("fish", "onion", "apple"),  
+("oyster", "broccoli", "apple"), ("oyster", "onion", "apple")]
