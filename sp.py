@@ -9,6 +9,8 @@ I decided to represent them as graphs. Construct the graph as follows:
 2) An edge in the graph is equivalent to saying that the vertex  is a member of a simplex.
 
 So if {A,B,C} is a simplex, then there exists an edge between A,B,C. This edge should be labeled.
+Then the degree of a vertex in a particular cluster corresponds to the dimension of its facets. 
+The potential downside of this representation is that it only gives a view of the facets of the complex and does not do a great job of providing insight about subsets, unless extra labelings are provided, or if this becomes a multigraph. (So edges between various simplices are colored differently.)
 '''
 
 # vertices: cow, rabbit, horse, dog, fish, dolphin, oyster, broccoli, fern, onion, apple....and connections
