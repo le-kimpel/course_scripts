@@ -10,7 +10,7 @@ I decided to represent them as graphs. Construct the graph as follows:
 
 So if {A,B,C} is a simplex, then there exists an edge between A,B,C. This edge should be labeled.
 Then the degree of a vertex in a particular cluster corresponds to the dimension of its facets. 
-The potential downside of this representation is that it only gives a view of the facets of the complex and does not do a great job of providing insight about subsets, unless extra labelings are provided, or if this becomes a multigraph. (So edges between various simplices are colored differently.)
+The potential downside of this representation is that it only gives a view of the facets of the complex and does not do a great job of providing insight about its faces, unless extra labelings are provided, or if this becomes a multigraph. (So edges between various simplices are colored differently, and we can have multiple edges emenating from a vertex.)
 '''
 
 # vertices: cow, rabbit, horse, dog, fish, dolphin, oyster, broccoli, fern, onion, apple....and connections
@@ -51,7 +51,7 @@ if __name__=="__main__":
     nx.draw(complexA, with_labels=True)
     plt.show()
 
-
+    # definitely need to color the edges here. 
     edgelistB = [("cow", "rabbit"), ("cow", "fish"), ("cow", "oyster"), ("cow", "oyster"), ("cow", "broccoli"), ("cow", "onion"), 
 ("cow", "apple"), ("rabbit", "fish"), ("rabbit", "oyster"), ("rabbit", "broccoli"), ("rabbit", "onion"),  
 ("rabbit", "apple"), ("fish", "oyster"), ("fish", "broccoli"), ("fish", "onion"), ("fish", "apple"), 
