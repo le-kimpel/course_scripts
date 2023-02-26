@@ -50,3 +50,11 @@ if __name__=="__main__":
 ("cow", "broccoli", "apple"), ("cow", "onion", "apple"), ("rabbit", "broccoli", "apple"),  
 ("rabbit", "onion", "apple"), ("fish", "broccoli", "apple"), ("fish", "onion", "apple"),  
 ("oyster", "broccoli", "apple"), ("oyster", "onion", "apple")]
+
+
+    for edge in edgelistB:
+        complexB.add_edge(edge[0],edge[1])
+
+    # produce the visual representation; here it should be a disconnected graph.
+    nx.draw(complexB, with_labels=True)
+    plt.show()
