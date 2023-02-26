@@ -5,29 +5,20 @@ import  matplotlib.pyplot as plt
 Here is a straightforward interpretation of 2 abstract simplicial complexes. 
 I decided to represent them as graphs. Construct the graph as follows: 
 
-1) Each vertex of the ASC is a vertex of its graph. 
-2) An edge in the graph is equivalent to saying that the vertex  is a member of a simplex.
-
-So if {A,B,C} is a simplex, then there exists an edge between A,B,C. This edge should be labeled.
-Then the degree of a vertex in a particular cluster corresponds to the dimension of its facets. 
-The potential downside of this representation is that it only gives a view of the facets of the complex and does not do a great job of providing insight about its faces, unless extra labelings are provided, or if this becomes a multigraph. (So edges between various simplices are colored differently, and we can have multiple edges emenating from a vertex.)
+An edge exists between simplices iff one is a subset of the other. This should be an onto map.
 '''
-
 # vertices: cow, rabbit, horse, dog, fish, dolphin, oyster, broccoli, fern, onion, apple....and connections
+
+def check_subset(A, B):
+    return set(A).issubset(B)
+
 if __name__=="__main__":
-    complexA = nx.Graph()
-    complexB = nx.Graph()
-
-    vertices = ["cow", "rabbit",  "horse", "dog", "fish", "dolphin", "oyster", "broccoli", "fern", "onion", "apple"]
-
-    for v in vertices:
-        complexA.add_node(v)
-        complexB.add_node(v)
-
+    
     # now construct a graphical interpretation of the complex mentioned for part (A);
     # that is, for each element of A, draw edges between its members.
     # Manually:
-    edgelistA =  [ ("cow","rabbit"),
+    
+    delta1 =  [ ("cow","rabbit"),
       ("cow", "horse"),
       ("cow", "dog"),
       ("rabbit", "horse"),
@@ -44,13 +35,32 @@ if __name__=="__main__":
     ("broccoli", "apple"),
     ("broccoli", "onion")]
 
-    for edge in edgelistA:
-        complexA.add_edge(edge[0],edge[1])
 
-    # produce the visual representation; here it should be a disconnected graph.
-    nx.draw(complexA, with_labels=True)
+    # now for the other dimension
+    delta2 = [("cow","rabbit", "horse"), ("cow", "rabbit", "dog"), ("cow", "horse", "dog"),
+                   ("rabbit", "horse", "dog"), ("fish", "dolphin", "oyster"), ("broccoli", "fern", "onion"), ("broccoli", "fern", "apple"), ("broccoli", "onion", "apple"), ("fern", "onion", "apple")]
+
+    # add the vertices
+    A = nx.Graph()
+    for v in delta1:
+        A.add_node(v)
+    for v in delta2:
+        A.add_node(v)
+    
+    # now add an edge between elements iff one is a subset of the other. This is not optimized.
+    for i in range(0,len(delta1)):
+        for j in range(0, len(delta2)):
+            if(check_subset(delta1[i], delta2[j]) == True):
+                A.add_edge(delta1[i], delta2[j])
+    
+
+    nx.draw(A, with_labels="True")
     plt.show()
 
+
+    B = nx.Graph()
+    
+'''
     # definitely need to color the edges here. 
     edgelistB = [("cow", "rabbit"), ("cow", "fish"), ("cow", "oyster"), ("cow", "oyster"), ("cow", "broccoli"), ("cow", "onion"), 
 ("cow", "apple"), ("rabbit", "fish"), ("rabbit", "oyster"), ("rabbit", "broccoli"), ("rabbit", "onion"),  
@@ -62,11 +72,4 @@ if __name__=="__main__":
 ("cow", "broccoli", "apple"), ("cow", "onion", "apple"), ("rabbit", "broccoli", "apple"),  
 ("rabbit", "onion", "apple"), ("fish", "broccoli", "apple"), ("fish", "onion", "apple"),  
 ("oyster", "broccoli", "apple"), ("oyster", "onion", "apple")]
-
-
-    for edge in edgelistB:
-        complexB.add_edge(edge[0],edge[1])
-
-    # produce the visual representation; here it should be a disconnected graph.
-    nx.draw(complexB, with_labels=True)
-    plt.show()
+'''
