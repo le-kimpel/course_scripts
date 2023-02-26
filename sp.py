@@ -1,6 +1,16 @@
 import networkx as nx
 import  matplotlib.pyplot as plt
 
+'''
+Here is a straightforward interpretation of 2 abstract simplicial complexes. 
+I decided to represent them as graphs. Construct the graph as follows: 
+
+1) Each vertex of the ASC is a vertex of its graph. 
+2) An edge in the graph is equivalent to saying that the vertex  is a member of a simplex.
+
+So if {A,B,C} is a simplex, then there exists an edge between A,B,C. This edge should be labeled.
+'''
+
 # vertices: cow, rabbit, horse, dog, fish, dolphin, oyster, broccoli, fern, onion, apple....and connections
 if __name__=="__main__":
     complexA = nx.Graph()
