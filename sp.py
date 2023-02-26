@@ -60,16 +60,25 @@ if __name__=="__main__":
 
     B = nx.Graph()
     
-'''
-    # definitely need to color the edges here. 
-    edgelistB = [("cow", "rabbit"), ("cow", "fish"), ("cow", "oyster"), ("cow", "oyster"), ("cow", "broccoli"), ("cow", "onion"), 
-("cow", "apple"), ("rabbit", "fish"), ("rabbit", "oyster"), ("rabbit", "broccoli"), ("rabbit", "onion"),  
-("rabbit", "apple"), ("fish", "oyster"), ("fish", "broccoli"), ("fish", "onion"), ("fish", "apple"), 
-("oyster", "broccoli"), ("oyster", "onion"), ("oyster", "apple"), ("broccoli", "onion"), ("broccoli", "apple"), 
-("onion", "apple"), 
-("horse", "dog"), ("horse", "dolphin"), ("horse", "fern"), ("dog", "dolphin"), ("dog", "fern"), 
-("dolphin", "fern"), 
-("cow", "broccoli", "apple"), ("cow", "onion", "apple"), ("rabbit", "broccoli", "apple"),  
-("rabbit", "onion", "apple"), ("fish", "broccoli", "apple"), ("fish", "onion", "apple"),  
+
+    delta3 = [("cow", "rabbit"), ("cow", "fish"), ("cow", "oyster"), ("cow", "oyster"), ("cow", "broccoli"), ("cow", "onion"), 
+("cow", "apple"), ("rabbit", "fish"), ("rabbit", "oyster"), ("rabbit", "broccoli"), ("rabbit", "onion"),  ("rabbit", "apple"), ("fish", "oyster"), ("fish", "broccoli"), ("fish", "onion"), ("fish", "apple"), ("oyster", "broccoli"), ("oyster", "onion"), ("oyster", "apple"), ("broccoli", "onion"), ("broccoli", "apple"), ("onion", "apple"), ("horse", "dog"), ("horse", "dolphin"), ("horse", "fern"), ("dog", "dolphin"), ("dog", "fern"), ("dolphin", "fern")]
+
+    delta4 = [("cow", "broccoli", "apple"), ("cow", "onion", "apple"), ("rabbit", "broccoli", "apple"),  ("rabbit", "onion", "apple"), ("fish", "broccoli", "apple"), ("fish", "onion", "apple"),  
 ("oyster", "broccoli", "apple"), ("oyster", "onion", "apple")]
-'''
+
+    for v in delta3:
+        B.add_node(v)
+    for v in delta4:
+        B.add_node(v)
+    
+    # now add an edge between elements iff one is a subset of the other. This is not optimized.
+    for i in range(0,len(delta3)):
+        for j in range(0, len(delta4)):
+            if(check_subset(delta3[i], delta4[j]) == True):
+                B.add_edge(delta3[i], delta4[j])
+    
+
+    nx.draw(B, with_labels="True")
+    plt.show()
+
