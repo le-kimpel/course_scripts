@@ -51,7 +51,7 @@ if __name__=="__main__":
     for i in range(0,len(delta1)):
         for j in range(0, len(delta2)):
             if(check_subset(delta1[i], delta2[j]) == True):
-                A.add_edge(delta1[i], delta2[j])
+                A.add_edge(delta2[j], delta1[i])
     
 
     nx.draw(A, with_labels="True")
@@ -76,7 +76,7 @@ if __name__=="__main__":
     for i in range(0,len(delta3)):
         for j in range(0, len(delta4)):
             if(check_subset(delta3[i], delta4[j]) == True):
-                B.add_edge(delta3[i], delta4[j])
+                B.add_edge(delta4[j], delta3[i])
     
 
     nx.draw(B, with_labels="True")
