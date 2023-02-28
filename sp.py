@@ -41,7 +41,7 @@ if __name__=="__main__":
                    ("rabbit", "horse", "dog"), ("fish", "dolphin", "oyster"), ("broccoli", "fern", "onion"), ("broccoli", "fern", "apple"), ("broccoli", "onion", "apple"), ("fern", "onion", "apple")]
 
     # add the vertices
-    A = nx.Graph()
+    A = nx.DiGraph()
     for v in delta1:
         A.add_node(v)
     for v in delta2:
@@ -58,7 +58,7 @@ if __name__=="__main__":
     plt.show()
 
 
-    B = nx.Graph()
+    B = nx.DiGraph()
     
 
     delta3 = [("cow", "rabbit"), ("cow", "fish"), ("cow", "oyster"), ("cow", "oyster"), ("cow", "broccoli"), ("cow", "onion"), 
