@@ -1,0 +1,8 @@
+{Cow, Rabbit}, {Cow, Horse}, {Cow, Dog}, {Rabbit, Horse}, {Rabbit, Dog}, {Horse, Dog}, 
+{Fish, Dolphin}, {Fish, Oyster}, {Dolphin, Oyster}, 
+{Broccoli, Fern}, {Broccoli, Onion}, {Broccoli, Apple}, {Fern, Onion}, {Fern, Apple},  
+{Onion, Apple},  
+{Cow, Rabbit, Horse}, {Cow, Rabbit, Dog}, {Cow, Horse, Dog}, {Rabbit, Horse, Dog}, 
+{Fish, Dolphin, Oyster}, 
+{Broccoli, Fern, Onion}, {Broccoli, Fern, Apple}, {Broccoli, Onion, Apple},  
+{Fern, Onion, Apple}
