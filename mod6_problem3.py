@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 '''
-Script pertaining to Problem 3, parts (b) and (d)
+Script pertaining to Problem 3, parts (b) and (d).
+Arbitrarily, simulation size N is set to 1000 samples.
 '''
 
 def calc_z(Z, X, Y):
