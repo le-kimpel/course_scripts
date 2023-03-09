@@ -6,7 +6,7 @@ Script pertaining to Problem 3, parts (b) and (d)
 '''
 
 def calc_z(Z, X, Y):
-    if np.sum((X[:, 1] == y)) == 0:
+    if np.sum((X[:, 1] == Y)) == 0:
         return 0.5
     return np.sum((X[:, 1] == Y) & (X[:, 2] == Z)) / np.sum((X[:, 1] == Y))
 
