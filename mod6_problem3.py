@@ -29,7 +29,7 @@ X[:, 2] = z
 
 estimates = []
 
-# estimate P(Z = 1 | Y = 1) 
+# estimate P(Z | Y = 1) 
 for i in range(0,1000):
     z_est = calc_z(1,X[:i], 1)
     estimates.append(z_est)
