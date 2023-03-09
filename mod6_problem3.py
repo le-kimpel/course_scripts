@@ -6,9 +6,10 @@ Script pertaining to Problem 3, parts (b) and (d)
 '''
 
 def calc_z(Z, X, Y):
-    if np.sum((X[:, 1] == Y)) == 0:
+    ANS = np.sum((X[:, 1] == Y)) 
+    if ANS == 0:
         return 0.5
-    return np.sum((X[:, 1] == Y) & (X[:, 2] == Z)) / np.sum((X[:, 1] == Y))
+    return ANS & (X[:, 2] == Z)) / np.sum((X[:, 1] == Y))
 
 '''
 PART (B) 
@@ -68,6 +69,6 @@ for i in range(0,1000):
 
 
 plt.scatter(np.arange(0,1000, 1, dtype=int), estimates2)
-plt.ylabel('P(Z | Y = 1)')
+plt.ylabel('P(Z | Y: = 1)')
 plt.xlabel('N')
 plt.show()
