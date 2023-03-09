@@ -45,3 +45,29 @@ plt.show()
 PART (D) 
 '''
 
+# generate uniform seed 
+unif2 = np.random.uniform(low = 0, high = 1, size=(1000,3))
+y_intervention = 1
+
+# now generate a bunch of random samples
+x = np.where(unif2[:, 0] < 1/2, 1, 0)
+y = y_intervention * np.ones(1000,dtype=int)
+z = np.where(unif2[:, 2] < np.exp(2*(x + y) - 2) / (1 + np.exp(2*(x + y) - 2)), 1, 0)
+
+X_prime = np.zeros((1000, 3), dtype=int)
+X_prime[:, 0] = x
+X_prime[:, 1] = y
+X_prime[:, 2] = z
+
+estimates2 = []
+
+# estimate P(Z | Y = 1) 
+for i in range(0,1000):
+    z_est = calc_z(1,X_prime[:i], 1)
+    estimates2.append(z_est)
+
+
+plt.scatter(np.arange(0,1000, 1, dtype=int), estimates2)
+plt.ylabel('P(Z | Y = 1)')
+plt.xlabel('N')
+plt.show()
