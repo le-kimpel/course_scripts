@@ -1,14 +1,5 @@
 import numpy
 
-class SimplicialComplex:
-    '''
-    Python representation of a generic simplicial complex.
-    '''
-    def __init__(self, dimension, deltas):
-        self.dimension = dimension
-        self.pchains = get_pchains(deltas)
-        return
-
 class pchain:
     '''
     Python representation of a pchain object
@@ -17,6 +8,21 @@ class pchain:
     self.mdata = deltas
     self.boundary = None
     return
+
+class SimplicialComplex:
+    '''
+    Python representation of a generic simplicial complex.
+    '''
+    def __init__(self, deltas):
+        self.dimension = len(deltas) + 1
+        self.deltas = deltas
+        self.pchains = {}
+        return
+    def init_pchains(self, deltas):
+        '''
+        Iteratively build  out pchain objects for each of the p-dimensional chains in deltas
+        '''
+        return
 
 def get_pchains(sc, p):
     '''
