@@ -4,9 +4,10 @@ class pchain:
     '''
     Python representation of a pchain object
     '''
-    def __init__(self, deltas)
-    self.mdata = deltas
+    def __init__(self, data)
+    self.mdata = data
     self.boundary = None
+    self.dimension = 0
     return
 
 class SimplicialComplex:
@@ -22,6 +23,13 @@ class SimplicialComplex:
         '''
         Iteratively build  out pchain objects for each of the p-dimensional chains in deltas
         '''
+        for chain in deltas:
+            for data in chain:
+                # get the dimension of the pchain
+                dim = len(data)
+                p = pchain(data)
+                p.dimension = dim
+                self.pchains.append(p)     
         return
 
 def get_pchains(sc, p):
@@ -38,6 +46,9 @@ def build_complex(data, deltas):
   
 if __name__ == "__main__":
 
+    # try not to neglect the vertices here either
+    delta = [("horse"), ("cow"), ("rabbit"), ("dog"), ("fish"), ("oyster"), ("dolphin"), ("broccoli"), ("fern"), ("onion"), ("apple")]
+    
     # manual representation grabbed from the painstaking labor in coding hw #1
     delta1 =  [ ("cow","rabbit"),
       ("cow", "horse"),
@@ -59,4 +70,4 @@ if __name__ == "__main__":
      delta2 = [("cow","rabbit", "horse"), ("cow", "rabbit", "dog"), ("cow", "horse", "dog"),
                    ("rabbit", "horse", "dog"), ("fish", "dolphin", "oyster"), ("broccoli", "fern", "onion"), ("broccoli", "fern", "apple"), ("broccoli", "onion", "apple"), ("fern", "onion", "apple")]
      # this is essentially Cp 
-     deltas = {delta1, delta2}
+     deltas = {delta, delta1, delta2}
