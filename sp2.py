@@ -16,8 +16,8 @@ class SimplicialComplex:
     '''
     def __init__(self, deltas):
         self.dimension = len(deltas) + 1
-        self.deltas = deltas
-        self.pchains = {}
+        self.mdata = deltas
+        self.pchains = init_pchains(deltas)
         return
     def init_pchains(self, deltas):
         '''
@@ -36,7 +36,11 @@ def get_pchains(sc, p):
     '''
     Return the p-chains of dimension p
     '''
-    return
+    res = []
+    for pchain in sc.pchains:
+        if(pchain.dimension == p):
+            res.append(pchain)
+    return res
 
 def build_complex(data, deltas):
     '''
