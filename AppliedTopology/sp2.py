@@ -6,7 +6,7 @@ class pchain:
     '''
     def __init__(self, data):
         self.mdata = data
-        self.dimension = data.size
+        self.dimension = 0
         self.boundary, self.boundary_pretty_print  = self.compute_boundary()
         return
     def compute_boundary(self):
@@ -29,35 +29,65 @@ class SimplicialComplex:
     '''
     Python representation of a generic simplicial complex.
     '''
-    def __init__(self, deltas):
-        self.dimension = len(deltas) + 1
-        self.mdata = deltas
-        self.pchains = init_pchains(deltas)
+    def __init__(self, Cp):
+        self.dimension = len(Cp) + 1
+        self.Cp = Cp
+        self.pchains = self.init_pchains()
         return
-    def init_pchains(self, deltas):
+    def init_pchains(self):
         '''
         Iteratively build  out pchain objects for each of the p-dimensional chains in deltas
         '''
-        for chain in deltas:
+        plist = []
+        for chain in self.Cp:
             for data in chain:
                 # get the dimension of the pchain
-                dim = len(data)
-                p = pchain(data)
+                if not isinstance(data, int):
+                    dim = len(data)
+                else:
+                    dim = 1
+                p = pchain(np.array(data))
                 p.dimension = dim
-                self.pchains.append(p)     
-        return
-    def compute_boundary_matrix(self, Cp):
-        return 
+                print(p.dimension)
+                plist.append(p) 
+        return plist 
+    def compute_boundary_matrix(self, dimension):
+        '''
+        Returns the boundary matrix representation of the chains that span Cp
+        and Cp-1
+        '''
+        Cp = self.get_pchains(dimension)
+        C_ = self.get_pchains(dimension - 1)
+            
+        # build an m x n numpy matrix
+        D = np.zeros((len(C_), len(Cp)))
+
+        for chain in Cp:
+            print(chain.mdata)
+        
+        # set up the pchains
+        for i in range(0, len(C_)):
+            for j in range(0, len(Cp)):
+                b, p = Cp[j].compute_boundary()
+                if b.any() < 0:
+                    D[i][j] = -1
+                elif b.any() > 0:
+                    D[i][j] = 1
+                else:
+                    D[i][j] = 0
+
+        print(D)
+        return D
     
-def get_pchains(sc, p):
-    '''
-    Return the p-chains of dimension p
-    '''
-    res = []
-    for pchain in sc.pchains:
-        if(pchain.dimension == p):
-            res.append(pchain)
-    return res
+    def get_pchains(self, p):
+        '''
+        Return the p-chains of dimension p
+        '''
+        res = []
+        for pchain in self.pchains:
+            if(pchain.dimension == p):
+                res.append(pchain)
+        return res
   
 if __name__ == "__main__":
 
@@ -100,11 +130,15 @@ if __name__ == "__main__":
     # this is essentially Cp 
     Cp = [C0, C1, C2]
 
+    A = SimplicialComplex(Cp)
+    A.compute_boundary_matrix(2)
+
+    
     # set up the pchains
     for data in Cp:
         for chain in data:
             chain = np.array(chain)
             p = pchain(chain)
-            print(p.boundary_pretty_print)
+            #print(p.boundary_pretty_print)
             
 
