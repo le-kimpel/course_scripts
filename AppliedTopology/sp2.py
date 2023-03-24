@@ -6,18 +6,23 @@ class pchain:
     '''
     def __init__(self, data):
         self.mdata = data
-        self.boundary = None
         self.dimension = data.size
+        self.boundary, self.boundary_pretty_print  = self.compute_boundary()
         return
     def compute_boundary(self):
         # recall the equation for computing the boundary of a pchain!
         total = np.array(0)
+        eqn = ''
         if (self.dimension > 1):
             for i in range(0,self.mdata.size):
                 arr = np.delete(self.mdata, i)
-                err = ((-1)**self.dimension) * arr % max(self.mdata)
+                err = ((-1)**i) * arr
+                if (i is not self.mdata.size-1):
+                    eqn += str(err) + " + "
+                else:
+                    eqn += str(err)
                 total = total + err
-        return total
+        return total, "Boundary of " + str(self.mdata) + ": " + eqn
 class SimplicialComplex:
     '''
     Python representation of a generic simplicial complex.
@@ -67,12 +72,11 @@ if __name__ == "__main__":
     onion = 10
     apple = 11
     
-    
     # try not to neglect the vertices here either
-    delta = [(horse), (cow), (rabbit), (dog), (fish), (oyster), (dolphin), (broccoli), (fern), (onion), (apple)]
+    C0 = [(horse), (cow), (rabbit), (dog), (fish), (oyster), (dolphin), (broccoli), (fern), (onion), (apple)]
     
     # manual representation grabbed from the painstaking labor in coding hw #1
-    delta1 =  [ (cow,rabbit),
+    C1 =  [ (cow,rabbit),
       (cow, horse),
       (cow, dog),
       (rabbit, horse),
@@ -89,14 +93,16 @@ if __name__ == "__main__":
     (broccoli, apple),
     (broccoli, onion)]
 
-    delta2 = [(cow,rabbit, horse), (cow, rabbit, dog), (cow, horse, dog), (rabbit, horse, dog), (fish, dolphin, oyster), (broccoli, fern, onion), (broccoli, fern, apple), (broccoli, onion, apple), (fern, onion, apple)]
+    C2 = [(cow,rabbit, horse), (cow, rabbit, dog), (cow, horse, dog), (rabbit, horse, dog), (fish, dolphin, oyster), (broccoli, fern, onion), (broccoli, fern, apple), (broccoli, onion, apple), (fern, onion, apple)]
+    
     # this is essentially Cp 
-    deltas = [delta, delta1, delta2]
+    Cp = [C0, C1, C2]
 
-    for data in deltas:
-        for stuff in data:
-            stuff = np.array(stuff)
-            p = pchain(stuff)
-            print(p.compute_boundary())
+    # set up the pchains
+    for data in Cp:
+        for chain in data:
+            chain = np.array(chain)
+            p = pchain(chain)
+            print(p.boundary_pretty_print)
             
 
