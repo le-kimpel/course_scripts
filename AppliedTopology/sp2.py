@@ -90,7 +90,11 @@ class SimplicialComplex:
         Row-reduce to find the kernel of the boundary map as the kernel of a linear map,
         and inspect the columns accordingly for zeroes
         '''
-                
+
+        # C0 = spanZ0!
+        if (dimension == 1):
+            return self.get_pchains(dimension)
+        
         # first, compute the boundary matrix
         M = self.compute_boundary_matrix(dimension)
         print(M)
@@ -156,7 +160,7 @@ class SimplicialComplex:
         '''
         M = self.compute_boundary_matrix(dimension)
         num_rows, num_cols = M.shape
-        rank = num_cols - np.linalg.matrix_rank(M)
+        rank = num_rows - np.linalg.matrix_rank(M)
         return rank
         
     def compute_homology_rank(self, dimension):
@@ -168,7 +172,7 @@ class SimplicialComplex:
         rank Hp = rank Zp - rank Bp. 
         '''
         Zp = self.compute_cycle_rank(dimension)
-        Bp = self.compute_boundary_rank(dimension)
+        Bp = self.compute_boundary_rank(dimension+1)
         return Zp - Bp
 
 
@@ -235,7 +239,7 @@ if __name__ == "__main__":
 
     print(A.compute_cycle_rank(2))
     print(A.compute_boundary_rank(2))
-    print(A.compute_homology_rank(1))
+    print(A.compute_homology_rank(2))
     
     # set up the pchains
     for data in Cp:
