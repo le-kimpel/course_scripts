@@ -82,7 +82,8 @@ class SimplicialComplex:
                 
         # first, compute the boundary matrix
         M = self.compute_boundary_matrix(dimension)
-        symb = symbols('a0:' + str(M.shape[0] * M.shape[1]))
+        num_rows, num_cols = M.shape
+        symb = symbols('a0:' + str(num_rows * num_cols))
         M = Matrix(M)
         
         # now get the row dimensions of M
@@ -116,20 +117,40 @@ class SimplicialComplex:
             b,p = chain.compute_boundary()
             Bp.append(b)
         
-
-        
         return
     
-    def compute_cycle_rank(self):
+    def compute_boundary_rank(self, dimension):
+        '''
+        Compute the ranks of the boundaries
+        '''
+        p = self.get_pchains(dimension)
+        if dimension == 0:
+            return len(p)
+        
+        M = self.compute_boundary_matrix(dimension)
+        rank = np.linalg.matrix_rank(M)
+        return rank
+
+    def compute_cycle_rank(self, dimension):
         '''
         Compute the ranks of the cycles
         '''
-        return
-    def compute_homology_rank(self):
+        M = self.compute_boundary_matrix(dimension)
+        num_rows, num_cols = M.shape
+        rank = num_cols - np.linalg.matrix_rank(M)
+        return rank
+        
+    def compute_homology_rank(self, dimension):
         '''
-        Compute the rank of the homologies
+        Compute the rank of the homologies:
+        first, take the rank of the cycles, and then the rank of the boundaries
+        of the next dimension, and then do the arithmetic.
+        E.g.:
+        rank Hp = rank Zp - rank Bp. 
         '''
-        return
+        Zp = self.compute_cycle_rank(dimension)
+        Bp = self.compute_boundary_rank(dimension)
+        return Zp - Bp
 
 
 def compute_boundary_with_matrix(sc, dimension):
@@ -191,6 +212,9 @@ if __name__ == "__main__":
     A = SimplicialComplex(Cp)
     A.compute_boundary_matrix(2)
     A.compute_cycles(2)
+    print(A.compute_cycle_rank(2))
+    print(A.compute_boundary_rank(2))
+    print(A.compute_homology_rank(2))
     
     # set up the pchains
     for data in Cp:
