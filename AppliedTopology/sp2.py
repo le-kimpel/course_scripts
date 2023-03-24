@@ -82,7 +82,9 @@ class SimplicialComplex:
                 
         # first, compute the boundary matrix
         M = self.compute_boundary_matrix(dimension)
+        print(M)
         num_rows, num_cols = M.shape
+        print(num_rows * num_cols)
         symb = symbols('a0:' + str(num_rows * num_cols))
         M = Matrix(M)
         
@@ -93,6 +95,7 @@ class SimplicialComplex:
         null = Matrix(np.zeros((len(C_), 1)))
         system = (M,null)
         kernel = linsolve(system, symb)
+        print(kernel)
         return kernel
         
     def get_pchains(self, p):
@@ -116,7 +119,11 @@ class SimplicialComplex:
         for chain in pchains:
             b,p = chain.compute_boundary()
             Bp.append(b)
-        
+
+        # from the boundary matrix representation, compute the cycles
+        kernel = compute_cycles(self, dimension)
+
+        # now figure out a representation that excludes the boundary
         return
     
     def compute_boundary_rank(self, dimension):
@@ -124,7 +131,7 @@ class SimplicialComplex:
         Compute the ranks of the boundaries
         '''
         p = self.get_pchains(dimension)
-        if dimension == 0:
+        if dimension == 1:
             return len(p)
         
         M = self.compute_boundary_matrix(dimension)
