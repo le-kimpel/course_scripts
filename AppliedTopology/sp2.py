@@ -18,11 +18,13 @@ class pchain:
                 arr = np.delete(self.mdata, i)
                 err = ((-1)**i) * arr
                 if (i is not self.mdata.size-1):
-                    eqn += str(err) + " + "
+                    eqn += "(-1)^(" + str(i) + ")" + str(arr) + " + "
                 else:
-                    eqn += str(err)
+                    eqn += "(-1)^(" + str(i) + ")" + str(arr)
                 total = total + err
-        return total, "Boundary of " + str(self.mdata) + ": " + eqn
+            return total, "Boundary of " + str(self.mdata) + ": " + eqn
+        else:
+            return total, "Boundary of " + str(self.mdata) + ": 0"
 class SimplicialComplex:
     '''
     Python representation of a generic simplicial complex.
