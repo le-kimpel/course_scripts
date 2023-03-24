@@ -62,21 +62,18 @@ class SimplicialComplex:
         # build an m x n numpy matrix
         D = np.zeros((len(C_), len(Cp)))
 
-        for chain in Cp:
-            print(chain.mdata)
-        
-        # set up the pchains
+        # set an index equal to 1 if Cp-1 belongs to the boundary of Cp, 0 if not
         for i in range(0, len(C_)):
             for j in range(0, len(Cp)):
-                b, p = Cp[j].compute_boundary()
-                if b.any() < 0:
-                    D[i][j] = -1
-                elif b.any() > 0:
+                b,p = Cp[j].compute_boundary()
+                index = p.find(str(C_[i].mdata))
+                if index != -1:
                     D[i][j] = 1
                 else:
                     D[i][j] = 0
 
         print(D)
+        
         return D
     
     def get_pchains(self, p):
