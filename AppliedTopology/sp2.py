@@ -71,9 +71,6 @@ class SimplicialComplex:
                     D[i][j] = 1
                 else:
                     D[i][j] = 0
-
-        print(D)
-        
         return D
     
     def get_pchains(self, p):
@@ -85,7 +82,17 @@ class SimplicialComplex:
             if(pchain.dimension == p):
                 res.append(pchain)
         return res
-  
+
+
+def compute_boundary_with_matrix(sc, dimension):
+    '''
+    Pass in a simplicial complex, and compute the boundary matrix
+    associated with a particular dimension. 
+    Then use that matrix to produce the boundaries of each relevant chain.
+    '''
+    
+    return
+    
 if __name__ == "__main__":
 
     # an integer representation
