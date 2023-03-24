@@ -19,9 +19,15 @@ class pchain:
                 arr = np.delete(self.mdata, i)
                 err = ((-1)**i) * arr
                 if (i is not self.mdata.size-1):
-                    eqn += "(-)^(" + str(i) + ")" + str(arr) + " + "
+                    if (i%2 == 0):
+                        eqn += "(p)" + str(arr) + " + "
+                    else:
+                        eqn += "(n)" + str(arr) + " + "
                 else:
-                    eqn += "(-)^(" + str(i) + ")" + str(arr)
+                    if (i%2 == 0):
+                        eqn += "(p)" + str(arr)
+                    else:
+                        eqn += "(n)" + str(arr)
                 total = total + err
             return total, "Boundary of " + str(self.mdata) + ": " + eqn
         else:
@@ -70,9 +76,10 @@ class SimplicialComplex:
                 index = res[0].find(str(C_[i].mdata))
                 if index != -1:
                     # this is really, really sketchy, but it'll be what we do for now.
-                    if i%2 == 0:
-                       D[i][j] = 1
-                    elif j%2 == 1:
+                    num = str(res[0][index-3])
+                    if num == "p":
+                        D[i][j] = 1
+                    elif num == "n":
                         D[i][j] = -1
                 else:
                     D[i][j] = 0
@@ -217,16 +224,18 @@ if __name__ == "__main__":
     (broccoli, onion)]
 
     C2 = [(cow,rabbit, horse), (cow, rabbit, dog), (cow, horse, dog), (rabbit, horse, dog), (fish, dolphin, oyster), (broccoli, fern, onion), (broccoli, fern, apple), (broccoli, onion, apple), (fern, onion, apple)]
-    
+
     # this is essentially Cp 
     Cp = [C0, C1, C2]
-
+    
     A = SimplicialComplex(Cp)
     A.compute_boundary_matrix(2)
     A.compute_cycles(2)
+    p = A.get_pchains(2)
+
     print(A.compute_cycle_rank(2))
-    print(A.compute_boundary_rank(3))
-    print(A.compute_homology_rank(2))
+    print(A.compute_boundary_rank(2))
+    print(A.compute_homology_rank(1))
     
     # set up the pchains
     for data in Cp:
@@ -235,4 +244,5 @@ if __name__ == "__main__":
             p = pchain(chain)
             #print(p.boundary_pretty_print)
             
-
+    
+    
