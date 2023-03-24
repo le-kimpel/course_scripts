@@ -1,4 +1,5 @@
 import numpy as np
+from sympy import Matrix, linsolve, symbols
 
 class pchain:
     '''
@@ -72,7 +73,27 @@ class SimplicialComplex:
                 else:
                     D[i][j] = 0
         return D
-    
+
+    def compute_cycles(self, dimension):
+        '''
+        Row-reduce to find the kernel of the boundary map as the kernel of a linear map,
+        and inspect the columns accordingly for zeroes
+        '''
+                
+        # first, compute the boundary matrix
+        M = self.compute_boundary_matrix(dimension)
+        symb = symbols('a0:' + str(M.shape[0] * M.shape[1]))
+        M = Matrix(M)
+        
+        # now get the row dimensions of M
+        C_ = self.get_pchains(dimension - 1)
+
+        # nullspace we'll be solving for
+        null = Matrix(np.zeros((len(C_), 1)))
+        system = (M,null)
+        kernel = linsolve(system, symb)
+        return kernel
+        
     def get_pchains(self, p):
         '''
         Return the p-chains of dimension p
@@ -83,15 +104,48 @@ class SimplicialComplex:
                 res.append(pchain)
         return res
 
+    def compute_homologies(self, dimension):
+        '''
+        Returns the entire homologies of the simplicial complex.
+        All we need to do here is compute *ALL* cycles within the complex
+        and remove those in a boundary. 
+        '''
+        pchains = self.get_pchains(dimension)
+        Bp = []
+        for chain in pchains:
+            b,p = chain.compute_boundary()
+            Bp.append(b)
+        
+
+        
+        return
+    
+    def compute_cycle_rank(self):
+        '''
+        Compute the ranks of the cycles
+        '''
+        return
+    def compute_homology_rank(self):
+        '''
+        Compute the rank of the homologies
+        '''
+        return
+
 
 def compute_boundary_with_matrix(sc, dimension):
     '''
     Pass in a simplicial complex, and compute the boundary matrix
     associated with a particular dimension. 
     Then use that matrix to produce the boundaries of each relevant chain.
+
+
+    TODO find the boundaries :P
     '''
-    
-    return
+    M = sc.compute_boundary_matrix(dimension)
+    boundaries = []
+    return boundaries
+
+
     
 if __name__ == "__main__":
 
@@ -136,7 +190,7 @@ if __name__ == "__main__":
 
     A = SimplicialComplex(Cp)
     A.compute_boundary_matrix(2)
-
+    A.compute_cycles(2)
     
     # set up the pchains
     for data in Cp:
