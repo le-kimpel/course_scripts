@@ -19,9 +19,9 @@ class pchain:
                 arr = np.delete(self.mdata, i)
                 err = ((-1)**i) * arr
                 if (i is not self.mdata.size-1):
-                    eqn += "(-1)^(" + str(i) + ")" + str(arr) + " + "
+                    eqn += "(-)^(" + str(i) + ")" + str(arr) + " + "
                 else:
-                    eqn += "(-1)^(" + str(i) + ")" + str(arr)
+                    eqn += "(-)^(" + str(i) + ")" + str(arr)
                 total = total + err
             return total, "Boundary of " + str(self.mdata) + ": " + eqn
         else:
@@ -49,7 +49,6 @@ class SimplicialComplex:
                     dim = 1
                 p = pchain(np.array(data))
                 p.dimension = dim
-                print(p.dimension)
                 plist.append(p) 
         return plist 
     def compute_boundary_matrix(self, dimension):
@@ -65,11 +64,16 @@ class SimplicialComplex:
 
         # set an index equal to 1 if Cp-1 belongs to the boundary of Cp, 0 if not
         for i in range(0, len(C_)):
-            for j in range(0, len(Cp)):
+            for j in range(0, len(Cp)): 
                 b,p = Cp[j].compute_boundary()
-                index = p.find(str(C_[i].mdata))
+                res = p.split(":")[1:]
+                index = res[0].find(str(C_[i].mdata))
                 if index != -1:
-                    D[i][j] = 1
+                    # this is really, really sketchy, but it'll be what we do for now.
+                    if i%2 == 0:
+                       D[i][j] = 1
+                    elif j%2 == 1:
+                        D[i][j] = -1
                 else:
                     D[i][j] = 0
         return D
@@ -221,7 +225,7 @@ if __name__ == "__main__":
     A.compute_boundary_matrix(2)
     A.compute_cycles(2)
     print(A.compute_cycle_rank(2))
-    print(A.compute_boundary_rank(2))
+    print(A.compute_boundary_rank(3))
     print(A.compute_homology_rank(2))
     
     # set up the pchains
