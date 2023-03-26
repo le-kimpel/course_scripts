@@ -37,7 +37,7 @@ class SimplicialComplex:
     Python representation of a generic simplicial complex.
     '''
     def __init__(self, Cp):
-        self.dimension = len(Cp) + 1
+        self.dimension = len(Cp)
         self.Cp = Cp
         self.pchains = self.init_pchains()
         return
@@ -87,8 +87,7 @@ class SimplicialComplex:
 
     def compute_cycles(self, dimension):
         '''
-        Row-reduce to find the kernel of the boundary map as the kernel of a linear map,
-        and inspect the columns accordingly for zeroes
+        Row-reduce to find the kernel of the boundary map as the kernel of a linear map.
         '''
 
         # C0 = spanZ0!
@@ -97,9 +96,8 @@ class SimplicialComplex:
         
         # first, compute the boundary matrix
         M = self.compute_boundary_matrix(dimension)
-        print(M)
+        
         num_rows, num_cols = M.shape
-        print(num_rows * num_cols)
         symb = symbols('a0:' + str(num_rows * num_cols))
         M = Matrix(M)
         
@@ -110,6 +108,8 @@ class SimplicialComplex:
         null = Matrix(np.zeros((len(C_), 1)))
         system = (M,null)
         kernel = linsolve(system, symb)
+
+        # format this output so we can produce the kernel generators
         
         return kernel
         
@@ -149,7 +149,8 @@ class SimplicialComplex:
         p = self.get_pchains(dimension)
         if dimension == 1:
             return len(p)
-        
+        elif dimension > self.dimension:
+            return 0
         M = self.compute_boundary_matrix(dimension)
         rank = np.linalg.matrix_rank(M)
         return rank
@@ -189,10 +190,14 @@ def compute_boundary_with_matrix(sc, dimension):
     Then use that matrix to produce the boundaries of each relevant chain.
 
 
-    TODO find the boundaries :P
+    Right now we're just going to get the generators for this group, 
+    returning them as columns of M.
     '''
     M = sc.compute_boundary_matrix(dimension)
     boundaries = []
+    rows, cols = M.shape
+    for i in range(0, cols):
+        boundaries.append(M[:i])
     return boundaries
 
 
@@ -246,6 +251,7 @@ if __name__ == "__main__":
     print(A.compute_cycle_rank(2))
     print(A.compute_boundary_rank(2))
     print(A.compute_homology_rank(2))
+    print(A.compute_homology_rank(3))
     
     # set up the pchains
     for data in Cp:
