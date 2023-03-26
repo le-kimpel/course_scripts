@@ -8,7 +8,6 @@ class pchain:
     def __init__(self, data):
         self.mdata = data
         self.dimension = 0
-        self.boundary, self.boundary_pretty_print  = self.compute_boundary()
         return
     def compute_boundary(self):
         # recall the equation for computing the boundary of a pchain!
