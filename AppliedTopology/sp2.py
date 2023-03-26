@@ -98,7 +98,7 @@ class SimplicialComplex:
         M = self.compute_boundary_matrix(dimension)
         
         num_rows, num_cols = M.shape
-        symb = symbols('a0:' + str(num_rows * num_cols))
+        symb = symbols('a0:' + str(num_cols))
         M = Matrix(M)
         
         # now get the row dimensions of M
@@ -110,7 +110,6 @@ class SimplicialComplex:
         kernel = linsolve(system, symb)
 
         # format this output so we can produce the kernel generators
-        
         return kernel
         
     def get_pchains(self, p):
