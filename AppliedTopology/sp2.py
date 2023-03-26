@@ -156,12 +156,18 @@ class SimplicialComplex:
 
     def compute_cycle_rank(self, dimension):
         '''
-        Compute the ranks of the cycles
+        Compute the ranks of the cycles: from the Rank-Nullity Theorem,
+        we have that 
+
+        rank Zp = col(M) - rank(M)
         '''
-        M = self.compute_boundary_matrix(dimension)
-        num_rows, num_cols = M.shape
-        rank = num_rows - np.linalg.matrix_rank(M)
-        return rank
+        boundary_rank = self.compute_boundary_rank(dimension)
+        M = Matrix(self.compute_boundary_matrix(dimension))
+        M_rref = M.rref()
+
+        pivots = M_rref[1]
+        col = len(pivots)
+        return col - boundary_rank
         
     def compute_homology_rank(self, dimension):
         '''
