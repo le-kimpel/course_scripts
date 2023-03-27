@@ -145,11 +145,9 @@ class SimplicialComplex:
         Compute the ranks of the boundaries
         '''
         p = self.get_pchains(dimension)
-        if dimension == 1:
-            return len(p)
-        elif dimension > self.dimension:
+        if dimension+1 > self.dimension:
             return 0
-        M = self.compute_boundary_matrix(dimension)
+        M = self.compute_boundary_matrix(dimension+1)
         rank = np.linalg.matrix_rank(M)
         return rank
 
@@ -160,11 +158,14 @@ class SimplicialComplex:
 
         rank Zp = col(M) - rank(M)
         '''
+        if (dimension == 1):
+            return len(self.get_pchains(1))
         boundary_rank = self.compute_boundary_rank(dimension)
         M = Matrix(self.compute_boundary_matrix(dimension))
         M_rref = M.rref()
 
         pivots = M_rref[1]
+        print(pivots)
         col = len(pivots)
         return col - boundary_rank
         
@@ -177,21 +178,19 @@ class SimplicialComplex:
         rank Hp = rank Zp - rank Bp. 
         '''
         Zp = self.compute_cycle_rank(dimension)
-        Bp = self.compute_boundary_rank(dimension+1)
+        Bp = self.compute_boundary_rank(dimension)
         return Zp - Bp
 
 
-def compute_boundary_with_matrix(sc, dimension):
+def compute_boundary_with_matrix(M):
     '''
-    Pass in a simplicial complex, and compute the boundary matrix
-    associated with a particular dimension. 
-    Then use that matrix to produce the boundaries of each relevant chain.
-
+    Pass in a boundary matrix;  
+    then use that matrix to produce the boundaries of each relevant chain.
 
     Right now we're just going to get the generators for this group, 
     returning them as columns of M.
     '''
-    M = sc.compute_boundary_matrix(dimension)
+   
     boundaries = []
     rows, cols = M.shape
     for i in range(0, cols):
@@ -242,14 +241,26 @@ if __name__ == "__main__":
     Cp = [C0, C1, C2]
     
     A = SimplicialComplex(Cp)
-    A.compute_boundary_matrix(2)
+    M = A.compute_boundary_matrix(2)
     A.compute_cycles(2)
     p = A.get_pchains(2)
 
-    print(A.compute_cycle_rank(2))
-    print(A.compute_boundary_rank(2))
-    print(A.compute_homology_rank(2))
-    print(A.compute_homology_rank(3))
+
+    print("Cycle rank Z0: " + str(A.compute_cycle_rank(1)))
+    print("Boundary rank B0: " + str(A.compute_boundary_rank(1)))
+    print("Homology rank H0: " + str(A.compute_homology_rank(1)))
+    print("")
+    
+    print("Cycle rank Z1: " + str(A.compute_cycle_rank(2)))
+    print("Boundary rank B1: " + str(A.compute_boundary_rank(2)))
+    print("Homology rank H1: " + str(A.compute_homology_rank(2)))
+
+    print("")
+    
+    print("Cycle rank Z2: " + str(A.compute_cycle_rank(3)))
+    print("Boundary rank B2: " + str(A.compute_boundary_rank(3)))
+    print("Homology rank H2: " + str(A.compute_homology_rank(3)))
+    
     
     # set up the pchains
     for data in Cp:
