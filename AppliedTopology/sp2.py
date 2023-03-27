@@ -132,18 +132,41 @@ class SimplicialComplex:
         All we need to do here is compute *ALL* cycles within the complex
         and remove those in a boundary. 
         '''
-        pchains = self.get_pchains(dimension)
         Bp = []
         Zp = []
-        for chain in pchains:
-            b,p = chain.compute_boundary()
-            Bp.append(b)
+        res = '<'
+        res2 = '<'
 
-        # from the boundary matrix representation, compute the cycles
-        kernel = compute_cycles(self, dimension)
+        if (dimension > 1 and dimension < self.dimension):
+            boundary_pchains = self.get_pchains(dimension+1)
 
+            for chain in boundary_pchains:
+                b,p = chain.compute_boundary()
+                p = p.split(":")[1:]
+                Bp.append(p)
+    
+
+        
+        kernel_pchains = self.get_pchains(dimension)
+        kernel = self.compute_cycles(dimension)
+        for i in kernel:
+            Zp.append(i)
+        
         # stuff every possible chain into the kernel equation and then ensure that the members of Bp do not belong to the vector spanned by result
-        return
+        indx = 0
+        for image in Bp:
+            res += str(image) + ","
+            if indx+1 == len(Bp):
+                res += str(image) + ">"
+            indx+=1
+
+        indx = 0
+        for k in Zp:
+            res2 += str(k) + ","
+            if indx+1 == len(Zp):
+                res2 += str(k) + ">"
+            indx+=1
+        return res2 + " / " + res
     
     def compute_boundary_rank(self, dimension):
         '''
@@ -266,4 +289,4 @@ if __name__ == "__main__":
     print("Boundary rank B2: " + str(A.compute_boundary_rank(4)))
     print("Homology rank H2: " + str(A.compute_homology_rank(3)))
     
-    
+    print("Homology: " + A.compute_homologies(2))
