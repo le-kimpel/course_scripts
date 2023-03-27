@@ -36,7 +36,7 @@ class SimplicialComplex:
     Python representation of a generic simplicial complex.
     '''
     def __init__(self, Cp):
-        self.dimension = len(Cp)
+        self.dimension = len(Cp)+1
         self.Cp = Cp
         self.pchains = self.init_pchains()
         return
@@ -63,14 +63,14 @@ class SimplicialComplex:
         '''
         Cp = self.get_pchains(dimension)
         C_ = self.get_pchains(dimension - 1)
-            
+    
         # build an m x n numpy matrix
         D = np.zeros((len(C_), len(Cp)))
 
         # set an index equal to 1 if Cp-1 belongs to the boundary of Cp, 0 if not
         for i in range(0, len(C_)):
             for j in range(0, len(Cp)): 
-                b,p = Cp[j].compute_boundary()
+                b,p = Cp[j].compute_boundary()    
                 res = p.split(":")[1:]
                 index = res[0].find(str(C_[i].mdata))
                 if index != -1:
@@ -80,6 +80,11 @@ class SimplicialComplex:
                         D[i][j] = 1
                     elif num == "n":
                         D[i][j] = -1
+                    elif num == "(":
+                        if (str(res[0][index-2]) == "p"):
+                            D[i][j] = 1
+                        elif (str(res[0][index-2]) == "n"):
+                            D[i][j] = -1
                 else:
                     D[i][j] = 0
         return D
@@ -145,9 +150,10 @@ class SimplicialComplex:
         Compute the ranks of the boundaries
         '''
         p = self.get_pchains(dimension)
-        if dimension+1 > self.dimension:
+        
+        if dimension >= self.dimension:
             return 0
-        M = self.compute_boundary_matrix(dimension+1)
+        M = self.compute_boundary_matrix(dimension)
         rank = np.linalg.matrix_rank(M)
         return rank
 
@@ -160,14 +166,18 @@ class SimplicialComplex:
         '''
         if (dimension == 1):
             return len(self.get_pchains(1))
+       
         boundary_rank = self.compute_boundary_rank(dimension)
         M = Matrix(self.compute_boundary_matrix(dimension))
-        M_rref = M.rref()
+        M_rref = np.array(M.rref()[0])
 
-        pivots = M_rref[1]
-        print(pivots)
-        col = len(pivots)
-        return col - boundary_rank
+        cols = 0
+        for col in zip(*M_rref):
+            total = sum(col)
+            if (total == 0 and -1 in col or total!=0):
+                cols+=1
+                
+        return  cols - boundary_rank
         
     def compute_homology_rank(self, dimension):
         '''
@@ -178,7 +188,7 @@ class SimplicialComplex:
         rank Hp = rank Zp - rank Bp. 
         '''
         Zp = self.compute_cycle_rank(dimension)
-        Bp = self.compute_boundary_rank(dimension)
+        Bp = self.compute_boundary_rank(dimension+1)
         return Zp - Bp
 
 
@@ -197,8 +207,6 @@ def compute_boundary_with_matrix(M):
         boundaries.append(M[:i])
     return boundaries
 
-
-    
 if __name__ == "__main__":
 
     # an integer representation
@@ -241,33 +249,21 @@ if __name__ == "__main__":
     Cp = [C0, C1, C2]
     
     A = SimplicialComplex(Cp)
-    M = A.compute_boundary_matrix(2)
-    A.compute_cycles(2)
-    p = A.get_pchains(2)
-
 
     print("Cycle rank Z0: " + str(A.compute_cycle_rank(1)))
-    print("Boundary rank B0: " + str(A.compute_boundary_rank(1)))
+    print("Boundary rank B0: " + str(A.compute_boundary_rank(2)))
     print("Homology rank H0: " + str(A.compute_homology_rank(1)))
+
     print("")
     
     print("Cycle rank Z1: " + str(A.compute_cycle_rank(2)))
-    print("Boundary rank B1: " + str(A.compute_boundary_rank(2)))
+    print("Boundary rank B1: " + str(A.compute_boundary_rank(3)))
     print("Homology rank H1: " + str(A.compute_homology_rank(2)))
 
     print("")
     
     print("Cycle rank Z2: " + str(A.compute_cycle_rank(3)))
-    print("Boundary rank B2: " + str(A.compute_boundary_rank(3)))
+    print("Boundary rank B2: " + str(A.compute_boundary_rank(4)))
     print("Homology rank H2: " + str(A.compute_homology_rank(3)))
-    
-    
-    # set up the pchains
-    for data in Cp:
-        for chain in data:
-            chain = np.array(chain)
-            p = pchain(chain)
-            #print(p.boundary_pretty_print)
-            
     
     
