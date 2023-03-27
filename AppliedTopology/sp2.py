@@ -128,14 +128,13 @@ class SimplicialComplex:
 
     def compute_homologies(self, dimension):
         '''
-        Returns the entire homologies of the simplicial complex.
-        All we need to do here is compute *ALL* cycles within the complex
-        and remove those in a boundary. 
+        Returns the homology representation of the simplicial complex.
         '''
         Bp = []
         Zp = []
         res = '<'
         res2 = '<'
+        final = ''
 
         if (dimension > 1 and dimension < self.dimension):
             boundary_pchains = self.get_pchains(dimension+1)
@@ -145,13 +144,15 @@ class SimplicialComplex:
                 p = p.split(":")[1:]
                 Bp.append(p)
     
-
-        
         kernel_pchains = self.get_pchains(dimension)
         kernel = self.compute_cycles(dimension)
         for i in kernel:
-            Zp.append(i)
-        
+            if (dimension > 1):
+                Zp.append(i)
+            elif (dimension == 1):
+                Zp.append(i.mdata)
+            else:
+                return 0
         # stuff every possible chain into the kernel equation and then ensure that the members of Bp do not belong to the vector spanned by result
         indx = 0
         for image in Bp:
@@ -166,6 +167,8 @@ class SimplicialComplex:
             if indx+1 == len(Zp):
                 res2 += str(k) + ">"
             indx+=1
+        if (len(res) == 1):
+            res += "0>"
         return res2 + " / " + res
     
     def compute_boundary_rank(self, dimension):
@@ -288,5 +291,7 @@ if __name__ == "__main__":
     print("Cycle rank Z2: " + str(A.compute_cycle_rank(3)))
     print("Boundary rank B2: " + str(A.compute_boundary_rank(4)))
     print("Homology rank H2: " + str(A.compute_homology_rank(3)))
-    
-    print("Homology: " + A.compute_homologies(2))
+
+    print("H0: " + A.compute_homologies(1))
+    print("H1:  " + A.compute_homologies(2))
+    print("H2: " + A.compute_homologies(3))
