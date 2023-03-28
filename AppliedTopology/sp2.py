@@ -100,21 +100,24 @@ class SimplicialComplex:
         
         # first, compute the boundary matrix
         M = self.compute_boundary_matrix(dimension)
-        
-        num_rows, num_cols = M.shape
-        symb = symbols('a0:' + str(num_cols))
         M = Matrix(M)
-        
-        # now get the row dimensions of M
-        C_ = self.get_pchains(dimension - 1)
+        kernel = M.nullspace()[0]
 
-        # nullspace we'll be solving for
-        null = Matrix(np.zeros((len(C_), 1)))
-        system = (M,null)
-        kernel = linsolve(system, symb)
-
+        # now write the actual basis in terms of the simplices
+        Cp = self.get_pchains(dimension)
+        KERNEL = ''
+        indx = 0
+        for i in range (0, len(kernel)):
+            if (int(kernel[i]) > 0):
+                KERNEL += str(Cp[i].mdata)
+                if (i+1 < len(kernel)):
+                    KERNEL += ' + '
+            elif (int(kernel[i]) < 0):
+                KERNEL += '-' + str(Cp[i].mdata)
+                if (i+1 < len(kernel)):
+                    KERNEL += ' + '
         # format this output so we can produce the kernel generators
-        return kernel
+        return KERNEL
         
     def get_pchains(self, p):
         '''
@@ -146,13 +149,14 @@ class SimplicialComplex:
     
         kernel_pchains = self.get_pchains(dimension)
         kernel = self.compute_cycles(dimension)
-        for i in kernel:
-            if (dimension > 1):
-                Zp.append(i)
-            elif (dimension == 1):
+        if (dimension == 1):
+            for i in kernel_pchains:
                 Zp.append(i.mdata)
-            else:
-                return 0
+        elif (dimension > 1 and dimension < self.dimension):
+            Zp.append(kernel)
+        else:
+            return 0
+
         # stuff every possible chain into the kernel equation and then ensure that the members of Bp do not belong to the vector spanned by result
         indx = 0
         for image in Bp:
@@ -163,10 +167,15 @@ class SimplicialComplex:
 
         indx = 0
         for k in Zp:
-            res2 += str(k) + ","
             if indx+1 == len(Zp):
                 res2 += str(k) + ">"
-            indx+=1
+            else:
+                indx+=1
+                if (dimension == 1):
+                    res2 += str(k) + ",  "
+                else:
+                    res2 = Zp
+                    continue
         if (len(res) == 1):
             res += "0>"
         return res2 + " / " + res
@@ -247,6 +256,29 @@ if __name__ == "__main__":
     fern = 9
     onion = 10
     apple = 11
+
+
+    # lil example
+    a = [(1),(2),(3)]
+    b = [(1,2), (1,3), (2,3)]
+    T = (a,b)
+    B = SimplicialComplex(T)
+
+
+    print("Cycle rank Z0: " + str(B.compute_cycle_rank(1)))
+    print("Boundary rank B0: " + str(B.compute_boundary_rank(2)))
+    print("Homology rank H0: " + str(B.compute_homology_rank(1)))
+
+    print("")
+    
+    print("Cycle rank Z1: " + str(B.compute_cycle_rank(2)))
+    print("Boundary rank B1: " + str(B.compute_boundary_rank(3)))
+    print("Homology rank H1: " + str(B.compute_homology_rank(2)))
+
+    print("")
+    
+    print("H0: " + B.compute_homologies(1))
+    print("H1:  " + B.compute_homologies(2))
     
     # try not to neglect the vertices here either
     C0 = [(horse), (cow), (rabbit), (dog), (fish), (oyster), (dolphin), (broccoli), (fern), (onion), (apple)]
