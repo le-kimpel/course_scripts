@@ -272,7 +272,7 @@ if __name__ == "__main__":
     fern = 9
     onion = 10
     apple = 11
-
+    '''
     # try not to neglect the vertices here either
     C0 = [(horse), (cow), (rabbit), (dog), (fish), (oyster), (dolphin), (broccoli), (fern), (onion), (apple)]
     
@@ -332,7 +332,7 @@ if __name__ == "__main__":
     print("H1:  " + A.compute_homologies(2))
     print("H2: " + A.compute_homologies(3))
 
-
+    '''
     D0 = [(cow), (rabbit), (fish), (oyster), (broccoli), (onion), (apple), (dog), (horse), (fern), (dolphin)]
     
     D1 = [(cow, rabbit), (cow, fish), (cow, oyster), (cow, oyster), (cow, broccoli), (cow, onion), 
@@ -369,10 +369,10 @@ if __name__ == "__main__":
     print("Boundary matrix (dell2): ")
     print(B.compute_boundary_matrix(3))
        
-    print("Cycle rank Z2: " + str(A.compute_cycle_rank(3)))
-    print("Boundary rank B2: " + str(A.compute_boundary_rank(4)))
-    print("Homology rank H2: " + str(A.compute_homology_rank(3)))
+    print("Cycle rank Z2: " + str(B.compute_cycle_rank(3)))
+    print("Boundary rank B2: " + str(B.compute_boundary_rank(4)))
+    print("Homology rank H2: " + str(B.compute_homology_rank(3)))
 
-    print("H0: " + A.compute_homologies(1))
-    print("H1:  " + A.compute_homologies(2))
-    print("H2: " + A.compute_homologies(3))
+    print("H0: " + B.compute_homologies(1))
+    print("H1:  " + B.compute_homologies(2))
+    print("H2: " + B.compute_homologies(3))
