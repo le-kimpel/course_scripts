@@ -1,6 +1,18 @@
 import numpy as np
 from sympy import Matrix, linsolve, symbols
 
+'''
+simplicial_complex.py - a script for computing representations of chain groups in chain complexes
+specificially. 
+
+DISCLAIMER: 
+It is typical in mathematical literature to refer to the dimensions of p-simplices by 0,..p.
+Here, I label them by 1,...p instead. So a p-chain dimension of 1 is a 0-chain, 2 is a 1-chain,
+etc. I'll try to avoid doing that in the future. It's pretty confusing. And also a little wrong.
+
+'''
+
+
 class pchain:
     '''
     Python representation of a pchain object
@@ -12,6 +24,7 @@ class pchain:
     def compute_boundary(self):
         # recall the equation for computing the boundary of a pchain!
         total = np.array(0)
+        
         eqn = ''
         if (self.dimension > 1):
             for i in range(0,self.mdata.size):
@@ -101,21 +114,25 @@ class SimplicialComplex:
         # first, compute the boundary matrix
         M = self.compute_boundary_matrix(dimension)
         M = Matrix(M)
-        kernel = M.nullspace()[0]
-
+        kernel = M.nullspace()
+        for basis in kernel:
+            basis = np.array(basis)
         # now write the actual basis in terms of the simplices
         Cp = self.get_pchains(dimension)
         KERNEL = ''
         indx = 0
-        for i in range (0, len(kernel)):
-            if (int(kernel[i]) > 0):
-                KERNEL += str(Cp[i].mdata)
-                if (i+1 < len(kernel)):
-                    KERNEL += ' + '
-            elif (int(kernel[i]) < 0):
-                KERNEL += '-' + str(Cp[i].mdata)
-                if (i+1 < len(kernel)):
-                    KERNEL += ' + '
+        for basis in kernel:
+            for i in range (0, len(basis)):
+                if (int(basis[i]) > 0):
+                    KERNEL += str(Cp[i].mdata)
+                    if (i+1 < len(basis)):
+                        KERNEL += ' + '
+                elif (int(basis[i]) < 0):
+                    KERNEL += '-' + str(Cp[i].mdata)
+                    if (i+1 < len(basis)):
+                        KERNEL += ' + '
+                if (i+1 == len(basis)):
+                    KERNEL += ','
         # format this output so we can produce the kernel generators
         return KERNEL
         
@@ -137,9 +154,8 @@ class SimplicialComplex:
         Zp = []
         res = '<'
         res2 = '<'
-        final = ''
 
-        if (dimension > 1 and dimension < self.dimension):
+        if (dimension >= 1 and dimension < self.dimension):
             boundary_pchains = self.get_pchains(dimension+1)
 
             for chain in boundary_pchains:
@@ -257,29 +273,6 @@ if __name__ == "__main__":
     onion = 10
     apple = 11
 
-
-    # lil example
-    a = [(1),(2),(3)]
-    b = [(1,2), (1,3), (2,3)]
-    T = (a,b)
-    B = SimplicialComplex(T)
-
-
-    print("Cycle rank Z0: " + str(B.compute_cycle_rank(1)))
-    print("Boundary rank B0: " + str(B.compute_boundary_rank(2)))
-    print("Homology rank H0: " + str(B.compute_homology_rank(1)))
-
-    print("")
-    
-    print("Cycle rank Z1: " + str(B.compute_cycle_rank(2)))
-    print("Boundary rank B1: " + str(B.compute_boundary_rank(3)))
-    print("Homology rank H1: " + str(B.compute_homology_rank(2)))
-
-    print("")
-    
-    print("H0: " + B.compute_homologies(1))
-    print("H1:  " + B.compute_homologies(2))
-    
     # try not to neglect the vertices here either
     C0 = [(horse), (cow), (rabbit), (dog), (fish), (oyster), (dolphin), (broccoli), (fern), (onion), (apple)]
     
@@ -308,18 +301,74 @@ if __name__ == "__main__":
     
     A = SimplicialComplex(Cp)
 
+    print("---------------------------------------------------------")
+    print(" C O M P L E X   A " )
+    print("---------------------------------------------------------")
+
+    
     print("Cycle rank Z0: " + str(A.compute_cycle_rank(1)))
     print("Boundary rank B0: " + str(A.compute_boundary_rank(2)))
     print("Homology rank H0: " + str(A.compute_homology_rank(1)))
 
     print("")
+
+    print("Boundary matrix (dell1): ")
+    print(A.compute_boundary_matrix(2))
     
     print("Cycle rank Z1: " + str(A.compute_cycle_rank(2)))
     print("Boundary rank B1: " + str(A.compute_boundary_rank(3)))
     print("Homology rank H1: " + str(A.compute_homology_rank(2)))
 
     print("")
+        
+    print("Boundary matrix (dell2): ")
+    print(A.compute_boundary_matrix(3))
     
+    print("Cycle rank Z2: " + str(A.compute_cycle_rank(3)))
+    print("Boundary rank B2: " + str(A.compute_boundary_rank(4)))
+    print("Homology rank H2: " + str(A.compute_homology_rank(3)))
+
+    print("H0: " + A.compute_homologies(1))
+    print("H1:  " + A.compute_homologies(2))
+    print("H2: " + A.compute_homologies(3))
+
+
+    D0 = [(cow), (rabbit), (fish), (oyster), (broccoli), (onion), (apple), (dog), (horse), (fern), (dolphin)]
+    
+    D1 = [(cow, rabbit), (cow, fish), (cow, oyster), (cow, oyster), (cow, broccoli), (cow, onion), 
+(cow, apple), (rabbit, fish), (rabbit, oyster), (rabbit, broccoli), (rabbit, onion),  (rabbit, apple), (fish, oyster), (fish, broccoli), (fish, onion), (fish, apple), (oyster, broccoli), (oyster, onion), (oyster, apple), (broccoli, onion), (broccoli, apple), (onion, apple), (horse, dog), (horse, dolphin), (horse, fern), (dog, dolphin), (dog, fern), (dolphin, fern)]
+
+    D2 = [(cow, broccoli, apple), (cow, onion, apple), (rabbit, broccoli, apple),  (rabbit, onion, apple), (fish, broccoli, apple), (fish, onion, apple),  
+(oyster, broccoli, apple), (oyster, onion, apple)]
+
+
+    Dp = [D0, D1, D2]
+    
+    B = SimplicialComplex(Dp)
+
+    print("---------------------------------------------------------")
+    print(" C O M P L E X   B " )
+    print("---------------------------------------------------------")
+
+    print("Cycle rank Z0: " + str(B.compute_cycle_rank(1)))
+    print("Boundary rank B0: " + str(B.compute_boundary_rank(2)))
+    print("Homology rank H0: " + str(B.compute_homology_rank(1)))
+
+    print("")
+
+    print("Boundary matrix (dell1): ")
+    print(B.compute_boundary_matrix(2))
+
+    print("Cycle rank Z1: " + str(B.compute_cycle_rank(2)))
+    print("Boundary rank B1: " + str(B.compute_boundary_rank(3)))
+    print("Homology rank H1: " + str(B.compute_homology_rank(2)))
+
+    print("")
+
+        
+    print("Boundary matrix (dell2): ")
+    print(B.compute_boundary_matrix(3))
+       
     print("Cycle rank Z2: " + str(A.compute_cycle_rank(3)))
     print("Boundary rank B2: " + str(A.compute_boundary_rank(4)))
     print("Homology rank H2: " + str(A.compute_homology_rank(3)))
