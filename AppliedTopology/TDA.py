@@ -12,7 +12,17 @@ Performs some analysis.
 In other words: for each feature vector, compute the difference between feature vectors. Use these differences to compute a min threshold and a max threshold.
 For each of these distances: 
 Get the points of distance d from one another; construct 0,1,2, and 3-simplices.
-'''''   
+'''''
+def get_union(A,B):
+    '''
+    Gets the union of tuples
+    '''
+    return tuple(set(A).union(set(B)))
+def get_intersection(A, B):
+    '''
+    Gets the intersection of tuples
+    '''
+    return tuple(set(A) & set(B))
 def get_simplex(data, d, dimension):
     '''
     From data in matrix, construct a simplex of a particular dimension; this is for each distance d. NOT !!!! OPTIMIZED !!!!
@@ -21,38 +31,35 @@ def get_simplex(data, d, dimension):
     if (dimension == 0):
         simplex = []
         for i in range(0, len(data)):
-            for j in range(0,len(data)):
-                if (data[i][j] == d):
+            for j in range(0, len(data)):
+                if (data[i][j] < d) and i not in simplex:
                     simplex.append(i)
-                    simplex.append(j)
-    
     # 1-simplices:
     if (dimension == 1):
         simplex = []
-        for i in range(0,len(data)):
-            for j in range(0, len(data)):
-                if (data[i][j] == d):
-                    simplex.append((i,j))
-
-    # 2-simplices:
+        for i in range(0, len(data)):
+            for j in range(i+1, len(data)):
+                if (data[i][j] < d):
+                    if (j,i) not in simplex:
+                        simplex.append((i,j))
+    # now we need to get creative
     if (dimension == 2):
-        simplex = []
+        temp = []
         for i in range(0, len(data)):
-            for j in range(0, len(data)):
-                for k in range(0, len(data)):
-                    if (data[i][k] == d) and k is not j and (data[i][j] == d):
-                        simplex.append(((i,j) + (k,)))
-
-    # 3-simplices:
-    if (dimension == 3):
+            s = ()
+            for j in range(i+1, len(data)):
+                if (data[i][j] < d):
+                    if (j,i) not in temp:
+                        s = s + (i,j)
+                        temp.append(s)
         simplex = []
-        for i in range(0, len(data)):
-            for j in range(0, len(data)):
-                for k in range(0, len(data)):
-                    for l in range(0, len(data)):
-                        if (data[i][l] == d) and l is not j and l is not k and (data[i][j] == d) and (data[i][k] == d):
-                            simplex.append((i,j,k,l))
-                    
+        # get the union of tuples
+        for i in range(0, len(temp)):
+            for j in range(i+1, len(temp)):
+                K = get_intersection(temp[i], temp[j])
+                if (K!= ()):
+                    t = get_union(temp[i], temp[j])
+                    simplex.append(t)
     return list(set(simplex))
 
 def get_distances(data):
@@ -85,10 +92,10 @@ if __name__ == "__main__":
     distances = get_distances(D1)
 
     # construct the simplices
-    for distance in distances:
-        C = [get_simplex(D1, distance, dim) for dim in range(0,1)]
-
+    C = [get_simplex(D1, distances[10], dim) for dim in range(0,3)]
+    print(C)
     # build the simplicial complex
     Complex = SimplicialComplex(C)
+    
     
     
