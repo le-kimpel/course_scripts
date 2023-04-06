@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
+from simplicial_complex import SimplicialComplex
 
 '''''
 TDA.py - Coding Homework 3
@@ -8,14 +9,13 @@ TDA.py - Coding Homework 3
 Examines a set of .csv files for persistent homologies.
 Performs some analysis. 
 
-In other words: for each feature vector, compute the difference between the 15 points. Use these differences to compute a min threshold and a max threshold.
+In other words: for each feature vector, compute the difference between feature vectors. Use these differences to compute a min threshold and a max threshold.
 For each of these distances: 
-Get the points of distance d from one another; construct 0,1, and 2-simplices.
-'''''
-
+Get the points of distance d from one another; construct 0,1,2, and 3-simplices.
+'''''   
 def get_simplex(data, d, dimension):
     '''
-    From data in matrix, construct a simplex of a particular dimension; this is for each distance d. 
+    From data in matrix, construct a simplex of a particular dimension; this is for each distance d. NOT !!!! OPTIMIZED !!!!
     '''
     # 0-simplices:
     if (dimension == 0):
@@ -39,22 +39,19 @@ def get_simplex(data, d, dimension):
         simplex = []
         for i in range(0, len(data)):
             for j in range(0, len(data)):
-                continue
-            for k in range(0, len(data)):
-                if (data[i][k] == d) and k is not j and (data[i][j] == d):
-                    simplex.append(((i,j) + (k,)))
+                for k in range(0, len(data)):
+                    if (data[i][k] == d) and k is not j and (data[i][j] == d):
+                        simplex.append(((i,j) + (k,)))
 
     # 3-simplices:
     if (dimension == 3):
         simplex = []
         for i in range(0, len(data)):
             for j in range(0, len(data)):
-                continue
-            for k in range(0, len(data)):
-                continue
-            for l in range(0, len(data)):
-                if (data[i][l] == d) and l is not j and l is not k and (data[i][j] == d) and (data[i][k] == d):
-                    simplex.append((i,j,k,l))
+                for k in range(0, len(data)):
+                    for l in range(0, len(data)):
+                        if (data[i][l] == d) and l is not j and l is not k and (data[i][j] == d) and (data[i][k] == d):
+                            simplex.append((i,j,k,l))
                     
     return list(set(simplex))
 
@@ -86,5 +83,12 @@ if __name__ == "__main__":
     print(df1)
     D1 = rank_order(df1)
     distances = get_distances(D1)
-    A = get_simplex(D1, distances[1], 1)
-    print(A)
+
+    # construct the simplices
+    for distance in distances:
+        C = [get_simplex(D1, distance, dim) for dim in range(0,1)]
+
+    # build the simplicial complex
+    Complex = SimplicialComplex(C)
+    
+    
