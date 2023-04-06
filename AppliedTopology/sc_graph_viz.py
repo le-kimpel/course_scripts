@@ -4,7 +4,6 @@ import  matplotlib.pyplot as plt
 '''
 Here is a straightforward interpretation of 2 abstract simplicial complexes. 
 I decided to represent them as graphs. Construct the graph as follows: 
-
 An edge exists between simplices iff one is a subset of the other. This should be an onto map.
 '''
 # vertices: cow, rabbit, horse, dog, fish, dolphin, oyster, broccoli, fern, onion, apple....and connections
@@ -81,4 +80,3 @@ if __name__=="__main__":
 
     nx.draw(B, with_labels="True")
     plt.show()
-
