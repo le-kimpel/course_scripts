@@ -60,6 +60,32 @@ def get_simplex(data, d, dimension):
                 if (K!= ()):
                     t = get_union(temp[i], temp[j])
                     simplex.append(t)
+
+    if (dimension == 3):
+        temp1 = []
+        for i in range(0, len(data)):
+            s = ()
+            for j in range(i+1, len(data)):
+                if (data[i][j] < d):
+                    if (j,i) not in temp1:
+                        s = s + (i,j)
+                        temp1.append(s)
+        temp2 = []
+        # get the union of tuples
+        for i in range(0, len(temp1)):
+            for j in range(i+1, len(temp1)):
+                K = get_intersection(temp1[i], temp1[j])
+                if (K!= ()):
+                    t = get_union(temp1[i], temp1[j])
+                    temp2.append(t)
+        simplex = []
+        for i in range(0, len(temp2)):
+            for j in range(i+1, len(temp2)):
+                K = get_intersection(temp1[i], temp1[j])
+                if (K!= ()):
+                    t = get_union(temp1[i], temp1[j])
+                    simplex.append(t)
+        
     return list(set(simplex))
 
 def get_distances(data):
@@ -92,7 +118,7 @@ if __name__ == "__main__":
     distances = get_distances(D1)
 
     # construct the simplices
-    C = [get_simplex(D1, distances[10], dim) for dim in range(0,3)]
+    C = [get_simplex(D1, distances[10], dim) for dim in range(0,4)]
     print(C)
     # build the simplicial complex
     Complex = SimplicialComplex(C)
