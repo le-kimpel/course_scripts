@@ -33,6 +33,29 @@ def get_simplex(data, d, dimension):
             for j in range(0, len(data)):
                 if (data[i][j] == d):
                     simplex.append((i,j))
+
+    # 2-simplices:
+    if (dimension == 2):
+        simplex = []
+        for i in range(0, len(data)):
+            for j in range(0, len(data)):
+                continue
+            for k in range(0, len(data)):
+                if (data[i][k] == d) and k is not j and (data[i][j] == d):
+                    simplex.append(((i,j) + (k,)))
+
+    # 3-simplices:
+    if (dimension == 3):
+        simplex = []
+        for i in range(0, len(data)):
+            for j in range(0, len(data)):
+                continue
+            for k in range(0, len(data)):
+                continue
+            for l in range(0, len(data)):
+                if (data[i][l] == d) and l is not j and l is not k and (data[i][j] == d) and (data[i][k] == d):
+                    simplex.append((i,j,k,l))
+                    
     return list(set(simplex))
 
 def get_distances(data):
