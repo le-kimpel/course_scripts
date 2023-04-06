@@ -126,11 +126,18 @@ if __name__ == "__main__":
     distances = get_distances(D1)
 
     # construct the simplices
-    C = [get_simplex(D1, distances[30], dim) for dim in range(0,4)]
+    C = [get_simplex(D1, distances[65], dim) for dim in range(0,4)]
     print(C)
     
     # build the simplicial complex
     Complex = SimplicialComplex(C)
-    
+    H0 = Complex.compute_homologies(1)
+    H1 = Complex.compute_homologies(2)
+    H2 = Complex.compute_homologies(3)
+
+    print("H0: " + str(H0))
+    print("H1: " + str(H1))
+    print("H2: " + str(H2))
+
     
     
