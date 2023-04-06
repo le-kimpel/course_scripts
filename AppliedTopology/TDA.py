@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 from simplicial_complex import SimplicialComplex
+from itertools import chain, combinations
 
 '''''
 TDA.py - Coding Homework 3
@@ -13,6 +14,9 @@ In other words: for each feature vector, compute the difference between feature 
 For each of these distances: 
 Get the points of distance d from one another; construct 0,1,2, and 3-simplices.
 '''''
+def powerset(iterable):
+    s = list(iterable)
+    return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
 def get_union(A,B):
     '''
     Gets the union of tuples
@@ -84,7 +88,11 @@ def get_simplex(data, d, dimension):
                 K = get_intersection(temp2[i], temp2[j])
                 if (K!= ()):
                     t = get_union(temp2[i], temp2[j])
-                    simplex.append(t)
+                    # permute to get the different sets of length 4.
+                    res = list(powerset(t))
+                    for item in res:
+                        if len(item) == 4:
+                            simplex.append(item)
         
     return list(set(simplex))
 
@@ -118,8 +126,9 @@ if __name__ == "__main__":
     distances = get_distances(D1)
 
     # construct the simplices
-    C = [get_simplex(D1, distances[10], dim) for dim in range(0,4)]
+    C = [get_simplex(D1, distances[30], dim) for dim in range(0,4)]
     print(C)
+    
     # build the simplicial complex
     Complex = SimplicialComplex(C)
     
