@@ -81,9 +81,9 @@ def get_simplex(data, d, dimension):
         simplex = []
         for i in range(0, len(temp2)):
             for j in range(i+1, len(temp2)):
-                K = get_intersection(temp1[i], temp1[j])
+                K = get_intersection(temp2[i], temp2[j])
                 if (K!= ()):
-                    t = get_union(temp1[i], temp1[j])
+                    t = get_union(temp2[i], temp2[j])
                     simplex.append(t)
         
     return list(set(simplex))
