@@ -119,6 +119,12 @@ def rank_order(df):
     dist_matrix = squareform(distances)
     return dist_matrix
 
+def graph_persistent_homology():
+    '''
+    Graph the persistent homologies
+    '''
+    return 
+
 if __name__ == "__main__":
     df1 = pd.read_csv("Data/CDHWdata_1.csv")
     print(df1)
@@ -126,7 +132,7 @@ if __name__ == "__main__":
     distances = get_distances(D1)
 
     # construct the simplices
-    C = [get_simplex(D1, distances[65], dim) for dim in range(0,4)]
+    C = [get_simplex(D1, distances[78], dim) for dim in range(0,4)]
     
     # build the simplicial complex
     Complex = SimplicialComplex(C)
@@ -150,7 +156,7 @@ if __name__ == "__main__":
     
 
     '''
-    Ci = [[(1,2),(1,3)],[(1),(2),(3)]]
+    Ci = [[(1,2),(2,3),(1,3)],[(1),(2),(3)], [(1,2,3)]]
     A = SimplicialComplex(Ci)
     
     

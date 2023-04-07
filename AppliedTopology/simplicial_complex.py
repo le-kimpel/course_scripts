@@ -98,6 +98,7 @@ class SimplicialComplex:
                             D[i][j] = -1
                 else:
                     D[i][j] = 0
+        print(D)
         return D
 
     def compute_cycles(self, dimension):
