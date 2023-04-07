@@ -21,24 +21,27 @@ class pchain:
         return
     def compute_boundary(self):
         # recall the equation for computing the boundary of a pchain!
-        total = np.array(0)
+        total = []
         
         eqn = ''
         if (self.dimension > 1):
             for i in range(0,self.mdata.size):
                 arr = np.delete(self.mdata, i)
-                err = ((-1)**i) * arr
+               
                 if (i is not self.mdata.size-1):
                     if (i%2 == 0):
                         eqn += "(p)" + str(arr) + " + "
+                        total.append((1, arr))
                     else:
                         eqn += "(n)" + str(arr) + " + "
+                        total.append((-1, arr))
                 else:
                     if (i%2 == 0):
                         eqn += "(p)" + str(arr)
+                        total.append((1, arr))
                     else:
                         eqn += "(n)" + str(arr)
-                total = total + err
+                        total.append((-1, arr))
             return total, "Boundary of " + str(self.mdata) + ": " + eqn
         else:
             return total, "Boundary of " + str(self.mdata) + ": 0"
@@ -84,21 +87,20 @@ class SimplicialComplex:
                 b,p = Cp[j].compute_boundary()
                 res = p.split(":")[1:]
                 index = res[0].find(str(C_[i].mdata))
-                if index != -1:
-                # this is really, really sketchy, but it'll be what we do for now.
-                    num = str(res[0][index-3])
-                    if num == "p":
-                        D[i][j] = 1
-                    elif num == "n":
-                        D[i][j] = -1
-                    elif num == "(":
-                        if (str(res[0][index-2]) == "p"):
-                            D[i][j] = 1
-                        elif (str(res[0][index-2]) == "n"):
-                            D[i][j] = -1
-                else:
+                n = 0
+                for k in b:
+                    if C_[i].mdata in k[1]:
+                        break
+                    else:
+                        n+=1
+                if n == len(b):
                     D[i][j] = 0
+                elif b[n][0] == 1:
+                    D[i][j] = 1
+                elif b[n][0] == -1:
+                    D[i][j] = -1
         print(D)
+        print("Rank: " + str(np.linalg.matrix_rank(D)))
         return D
 
     def compute_cycles(self, dimension):
@@ -199,8 +201,6 @@ class SimplicialComplex:
         '''
         Compute the ranks of the boundaries
         '''
-        p = self.get_pchains(dimension)
-        
         if dimension >= self.dimension:
             return 0
         M = self.compute_boundary_matrix(dimension)
@@ -217,18 +217,12 @@ class SimplicialComplex:
         if (dimension == 1):
             return len(self.get_pchains(1))
        
-        boundary_rank = self.compute_boundary_rank(dimension+1)
+        boundary_rank = self.compute_boundary_rank(dimension)
         M = Matrix(self.compute_boundary_matrix(dimension))
-        M_rref = np.array(M.rref()[0])
+        M_rref = M.rref()[0]
 
-        cols = 0
-        for col in zip(*M_rref):
-            total = sum(col)
-            if (total == 0 and -1 in col or total!=0):
-                cols+=1
-                
-        return  cols - boundary_rank
-        
+        return M_rref.shape[1] - M.rank()
+
     def compute_homology_rank(self, dimension):
         '''
         Compute the rank of the homologies:
@@ -238,9 +232,8 @@ class SimplicialComplex:
         rank Hp = rank Zp - rank Bp. 
         '''
         Zp = self.compute_cycle_rank(dimension)
-        Bp = self.compute_boundary_rank(dimension+2)
-        print(Zp)
-        print(Bp)
+        Bp = self.compute_boundary_rank(dimension+1)
+        
         return Zp - Bp
 
     def compute_euler_characterisic(self):
