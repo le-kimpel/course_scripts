@@ -75,6 +75,8 @@ class SimplicialComplex:
         Returns the boundary matrix representation of the chains that span Cp
         and Cp-1
         '''
+        if (dimension == 1 or dimension >= self.dimension):
+            return []
         Cp = self.get_pchains(dimension)
         C_ = self.get_pchains(dimension - 1)
     
