@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
-from simplicial_complex import SimplicialComplex
+from simplicial_complex import SimplicialComplex, compute_boundary_with_matrix
 from itertools import chain, combinations
 
 '''''
@@ -127,17 +127,42 @@ if __name__ == "__main__":
 
     # construct the simplices
     C = [get_simplex(D1, distances[65], dim) for dim in range(0,4)]
-    print(C)
     
     # build the simplicial complex
     Complex = SimplicialComplex(C)
     H0 = Complex.compute_homologies(1)
     H1 = Complex.compute_homologies(2)
     H2 = Complex.compute_homologies(3)
+    
+    #print("H0: " + str(H0))
+    #print("H1: " + str(H1))
+    #print("H2: " + str(H2))
+    
+    rankH0 = Complex.compute_homology_rank(1)
+    rankH1 = Complex.compute_homology_rank(2)
+    rankH2 = Complex.compute_homology_rank(3)
+    
+    print("Rank H0: " + str(rankH0))
+    print("Rank H1: " + str(rankH1))
+    print("Rank H2: " + str(rankH2))
 
-    print("H0: " + str(H0))
-    print("H1: " + str(H1))
-    print("H2: " + str(H2))
+    print(Complex.compute_euler_characterisic())
+    
 
+    '''
+    Ci = [[(1,2),(1,3)],[(1),(2),(3)]]
+    A = SimplicialComplex(Ci)
     
     
+    H0 = A.compute_homologies(1)
+    H1 = A.compute_homologies(2)
+    H2 = A.compute_homologies(3)
+    
+    rankH0 = A.compute_homology_rank(1)
+    rankH1 = A.compute_homology_rank(2)
+    rankH2 = A.compute_homology_rank(3)
+
+    print("Rank H0: " + str(rankH0))
+    print("Rank H1: " + str(rankH1))
+    print("Rank H2: " + str(rankH2))
+    '''

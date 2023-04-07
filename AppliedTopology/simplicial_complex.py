@@ -11,8 +11,6 @@ Here, I label them by 1,...p instead. So a p-chain dimension of 1 is a 0-chain, 
 etc. I'll try to avoid doing that in the future. It's pretty confusing. And also a little wrong.
 
 '''
-
-
 class pchain:
     '''
     Python representation of a pchain object
@@ -79,15 +77,15 @@ class SimplicialComplex:
     
         # build an m x n numpy matrix
         D = np.zeros((len(C_), len(Cp)))
-
+        
         # set an index equal to 1 if Cp-1 belongs to the boundary of Cp, 0 if not
         for i in range(0, len(C_)):
             for j in range(0, len(Cp)): 
-                b,p = Cp[j].compute_boundary()    
+                b,p = Cp[j].compute_boundary()
                 res = p.split(":")[1:]
                 index = res[0].find(str(C_[i].mdata))
                 if index != -1:
-                    # this is really, really sketchy, but it'll be what we do for now.
+                # this is really, really sketchy, but it'll be what we do for now.
                     num = str(res[0][index-3])
                     if num == "p":
                         D[i][j] = 1
@@ -218,7 +216,7 @@ class SimplicialComplex:
         if (dimension == 1):
             return len(self.get_pchains(1))
        
-        boundary_rank = self.compute_boundary_rank(dimension)
+        boundary_rank = self.compute_boundary_rank(dimension+1)
         M = Matrix(self.compute_boundary_matrix(dimension))
         M_rref = np.array(M.rref()[0])
 
@@ -239,10 +237,22 @@ class SimplicialComplex:
         rank Hp = rank Zp - rank Bp. 
         '''
         Zp = self.compute_cycle_rank(dimension)
-        Bp = self.compute_boundary_rank(dimension+1)
+        Bp = self.compute_boundary_rank(dimension+2)
+        print(Zp)
+        print(Bp)
         return Zp - Bp
 
+    def compute_euler_characterisic(self):
+        '''
+        Chi = Vertices - Edges + Faces
+        '''
+        Chi = 0
+        C0 = self.get_pchains(1)
+        C1 = self.get_pchains(2)
+        C2 = self.get_pchains(3)
 
+        Chi = len(C0) - len(C1) + len(C2)
+        return Chi
 def compute_boundary_with_matrix(M):
     '''
     Pass in a boundary matrix;  
