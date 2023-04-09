@@ -101,8 +101,6 @@ class SimplicialComplex:
                     D[i][j] = 1
                 elif b[n][0] == -1:
                     D[i][j] = -1
-        print(D)
-        print("Rank: " + str(np.linalg.matrix_rank(D)))
         return D
 
     def compute_cycles(self, dimension):
