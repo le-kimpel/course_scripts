@@ -27,23 +27,32 @@ def get_intersection(A, B):
     Gets the intersection of tuples
     '''
     return tuple(set(A) & set(B))
-def get_simplex(data, d, dimension):
+
+def check_faces(simplex):
+    '''
+    A way to try and remove faces that don't make any logical sense
+    '''
+    return
+
+def get_simplex(data, l, u,  dimension):
     '''
     From data in matrix, construct a simplex of a particular dimension; this is for each distance d. NOT !!!! OPTIMIZED !!!!
     '''
+    if (l > u):
+        return "ERROR: Lower bound must be less than upper bound"
     # 0-simplices:
     if (dimension == 0):
         simplex = []
         for i in range(0, len(data)):
             for j in range(0, len(data)):
-                if (data[i][j] < d) and i not in simplex:
+                if (data[i][j] < u) and (data[i][j] > l) and i not in simplex:
                     simplex.append(i)
     # 1-simplices:
     if (dimension == 1):
         simplex = []
         for i in range(0, len(data)):
             for j in range(i+1, len(data)):
-                if (data[i][j] < d):
+                if (data[i][j] < u) and (data[i][j]) > l:
                     if (j,i) not in simplex:
                         simplex.append((i,j))
     # now we need to get creative
@@ -52,7 +61,7 @@ def get_simplex(data, d, dimension):
         for i in range(0, len(data)):
             s = ()
             for j in range(i+1, len(data)):
-                if (data[i][j] < d):
+                if (data[i][j] < u) and (data[i][j] > l):
                     if (j,i) not in temp:
                         s = s + (i,j)
                         temp.append(s)
@@ -73,7 +82,7 @@ def get_simplex(data, d, dimension):
         for i in range(0, len(data)):
             s = ()
             for j in range(i+1, len(data)):
-                if (data[i][j] < d):
+                if (data[i][j] < u) and (data[i][j] > l):
                     if (j,i) not in temp1:
                         s = s + (i,j)
                         temp1.append(s)
@@ -136,7 +145,7 @@ if __name__ == "__main__":
     distances = get_distances(D1)
 
     # construct the simplices
-    C = [get_simplex(D1, distances[23], dim) for dim in range(0,2)]
+    C = [get_simplex(D1, distances[4], distances[23], dim) for dim in range(0,4)]
 
     # build the simplicial complex
     Complex = SimplicialComplex(C)
