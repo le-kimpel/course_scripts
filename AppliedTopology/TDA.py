@@ -65,6 +65,9 @@ def get_simplex(data, d, dimension):
                     t = get_union(temp[i], temp[j])
                     simplex.append(t)
 
+    '''
+    TODO: We also need to make sure that the faces of this complex actually make sense.
+    '''
     if (dimension == 3):
         temp1 = []
         for i in range(0, len(data)):
@@ -126,14 +129,15 @@ def graph_persistent_homology():
     return 
 
 if __name__ == "__main__":
+    
     df1 = pd.read_csv("Data/CDHWdata_1.csv")
     print(df1)
     D1 = rank_order(df1)
     distances = get_distances(D1)
 
     # construct the simplices
-    C = [get_simplex(D1, distances[78], dim) for dim in range(0,4)]
-    
+    C = [get_simplex(D1, distances[23], dim) for dim in range(0,2)]
+
     # build the simplicial complex
     Complex = SimplicialComplex(C)
     H0 = Complex.compute_homologies(1)
@@ -143,20 +147,15 @@ if __name__ == "__main__":
     #print("H0: " + str(H0))
     #print("H1: " + str(H1))
     #print("H2: " + str(H2))
-    
-    rankH0 = Complex.compute_homology_rank(1)
-    rankH1 = Complex.compute_homology_rank(2)
-    rankH2 = Complex.compute_homology_rank(3)
-    
-    print("Rank H0: " + str(rankH0))
-    print("Rank H1: " + str(rankH1))
-    print("Rank H2: " + str(rankH2))
 
+    print(Complex.compute_homology_rank(1))
+    print(Complex.compute_homology_rank(2))
+   
     print(Complex.compute_euler_characterisic())
-    
+
 
     '''
-    Ci = [[(1,2),(2,3),(1,3)],[(1),(2),(3)], [(1,2,3)]]
+    Ci = [[(1),(2),(3),(4)], [(1,2),(1,3),(2,4),(2,3),(3,4)]]
     A = SimplicialComplex(Ci)
     
     
@@ -171,4 +170,6 @@ if __name__ == "__main__":
     print("Rank H0: " + str(rankH0))
     print("Rank H1: " + str(rankH1))
     print("Rank H2: " + str(rankH2))
+    
     '''
+    
