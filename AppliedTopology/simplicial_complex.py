@@ -74,7 +74,6 @@ class SimplicialComplex:
                 p.dimension = dim
                 if (max_dimension < p.dimension):
                     max_dimension = p.dimension
-                    print(p.mdata)
                 plist.append(p)
         if max_dimension != self.dimension:
             self.dimension = max_dimension
