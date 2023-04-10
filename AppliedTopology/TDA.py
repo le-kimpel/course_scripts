@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
 import networkx as nx
+import matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist, squareform
-from simplicial_complex import SimplicialComplex, compute_boundary_with_matrix
+from simplicial_complex import SimplicialComplex
 from itertools import chain, combinations
 
 '''''
@@ -44,6 +45,9 @@ def check_faces(sc, dimension):
     k = sc.get_pchains(dimension-1)
 
     nlist = []
+
+    if (p == []):
+        return 0
     
     for subchain in k:
         nlist.append(tuple(subchain.mdata))
@@ -98,7 +102,10 @@ def get_simplex(data, l, u,  dimension):
                 K = get_intersection(temp[i], temp[j])
                 if (K!= ()):
                     t = get_union(temp[i], temp[j])
-                    simplex.append(t)
+                    res = list(powerset(t))
+                    for item in res:
+                        if (len(item)) == 3:
+                            simplex.append(item)
     if (dimension == 3):
         temp1 = []
         for i in range(0, len(data)):
@@ -127,7 +134,6 @@ def get_simplex(data, l, u,  dimension):
                     for item in res:
                         if len(item) == 4:
                             simplex.append(item)
-        
     return list(set(simplex))
 
 def get_distances(data):
@@ -153,7 +159,7 @@ def rank_order(df):
     dist_matrix = squareform(distances)
     return dist_matrix
 
-def graph_persistent_homology():
+def graph_persistent_homology(sc):
     '''
     Graph the persistent homologies
     '''
@@ -161,38 +167,60 @@ def graph_persistent_homology():
 
 if __name__ == "__main__":
     
-    df1 = pd.read_csv("Data/CDHWdata_1.csv")
+    df1 = pd.read_csv("Data/CDHWdata_2.csv")
     print(df1)
     D1 = rank_order(df1)
     distances = get_distances(D1)
 
+    H0list = []
+    H1list = []
+    H2list = []
+
+    H0_hlist = []
+    H1_hlist = []
+    H2_hlist = []
+    
     # construct the simplices
-    C = [get_simplex(D1, distances[4], distances[32], dim) for dim in range(0,4)]
+    for i in range(1,60):
+        C = [get_simplex(D1, 0, distances[i], dim) for dim in range(0,4)]
+        #print(C)
+        
+        # build the simplicial complex
+        Complex = SimplicialComplex(C)
+        
+        check_faces(Complex, 4)
+        check_faces(Complex, 3)
     
-    # build the simplicial complex
-    Complex = SimplicialComplex(C)
-    check_faces(Complex, 4)
-    check_faces(Complex, 3)
-    p = Complex.get_pchains(3)
-    for chain in p:
-        print(chain.mdata)
-    
-    H0 = Complex.compute_homologies(1)
-    H1 = Complex.compute_homologies(2)
-    H2 = Complex.compute_homologies(3)
-    
-    #print("H0: " + str(H0))
-    #print("H1: " + str(H1))
-    #print("H2: " + str(H2))
+        H0 = Complex.compute_homologies(1)
+        H1 = Complex.compute_homologies(2)
+        H2 = Complex.compute_homologies(3)
 
-    print("--------------- S T A T S ---------------") 
-    print("Dimension of SC: " + str(Complex.dimension))
-    print("Rank H0: " + str(Complex.compute_homology_rank(1)))
-    print("Rank H1: " + str(Complex.compute_homology_rank(2)))
-    print("Rank H2: " + str(Complex.compute_homology_rank(3)))
-    print("Euler Characteristic: " + str(Complex.compute_euler_characterisic()))
-    print("--------------- S T A T S ---------------")
+        print("--------------- S T A T S ---------------") 
+        print("Dimension of SC: " + str(Complex.dimension))
+        print("Rank H0: " + str(Complex.compute_homology_rank(1)))
+        print("Rank H1: " + str(Complex.compute_homology_rank(2)))
+        print("Rank H2: " + str(Complex.compute_homology_rank(3)))
+        print("Euler Characteristic: " + str(Complex.compute_euler_characterisic()))
+        print("--------------- S T A T S ---------------")
 
+        H0list.append(distances[i])
+        H1list.append(distances[i])
+        H2list.append(distances[i])
+
+        H0_hlist.append(Complex.compute_homology_rank(1))
+        H1_hlist.append(Complex.compute_homology_rank(2))
+        H2_hlist.append(Complex.compute_homology_rank(3))
+
+    # try graphing the persistent homologies!
+    plt.scatter(H0list, H0_hlist, color='r')
+    plt.scatter(H1list, H1_hlist, color='g')
+    plt.scatter(H2list, H2_hlist,  color='k')
+    plt.xlabel('Euclidean Distance')
+    plt.ylabel('Ranks of H_0, H_1, and H_2')
+    labels = ['H_0', 'H_1', 'H_2']
+    plt.legend(labels)
+    plt.show()
+        
     '''
     # A debugger simplicial complex
     Ci = [[(1),(2),(3),(4)], [(1,2),(1,3),(2,4),(2,3),(3,4)]]

@@ -62,6 +62,7 @@ class SimplicialComplex:
         Iteratively build  out pchain objects for each of the p-dimensional chains in deltas
         '''
         plist = []
+        max_dimension = 0
         for chain in self.Cp:
             for data in chain:
                 # get the dimension of the pchain
@@ -71,7 +72,12 @@ class SimplicialComplex:
                     dim = 1
                 p = pchain(np.array(data))
                 p.dimension = dim
-                plist.append(p) 
+                if (max_dimension < p.dimension):
+                    max_dimension = p.dimension
+                    print(p.mdata)
+                plist.append(p)
+        if max_dimension != self.dimension:
+            self.dimension = max_dimension
         return plist 
     def compute_boundary_matrix(self, dimension):
         '''
@@ -204,7 +210,7 @@ class SimplicialComplex:
         '''
         Compute the ranks of the boundaries
         '''
-        if dimension >= self.dimension:
+        if dimension > self.dimension:
             return 0
         M = self.compute_boundary_matrix(dimension)
         rank = np.linalg.matrix_rank(M)
@@ -223,7 +229,6 @@ class SimplicialComplex:
         boundary_rank = self.compute_boundary_rank(dimension)
         M = Matrix(self.compute_boundary_matrix(dimension))
         M_rref = M.rref()[0]
-
         return M_rref.shape[1] - M.rank()
 
     def compute_homology_rank(self, dimension):
@@ -235,8 +240,7 @@ class SimplicialComplex:
         rank Hp = rank Zp - rank Bp. 
         '''
         Zp = self.compute_cycle_rank(dimension)
-        Bp = self.compute_boundary_rank(dimension+1)
-        
+        Bp = self.compute_boundary_rank(dimension+1)    
         return Zp - Bp
 
     def compute_euler_characterisic(self):
@@ -247,7 +251,7 @@ class SimplicialComplex:
         C0 = self.get_pchains(1)
         C1 = self.get_pchains(2)
         C2 = self.get_pchains(3)
-
+        
         Chi = len(C0) - len(C1) + len(C2)
         return Chi
 def compute_boundary_with_matrix(M):
