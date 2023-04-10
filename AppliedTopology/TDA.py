@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import networkx as nx
 from scipy.spatial.distance import pdist, squareform
 from simplicial_complex import SimplicialComplex, compute_boundary_with_matrix
 from itertools import chain, combinations
@@ -14,6 +15,11 @@ In other words: for each feature vector, compute the difference between feature 
 For each of these distances: 
 Get the points of distance d from one another; construct 0,1,2, and 3-simplices.
 '''''
+def build_chain_graph(sc):
+    '''
+    Fun little visualizer for the orientations of a given complex.
+    '''
+    return 
 def powerset(iterable):
     s = list(iterable)
     return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
@@ -56,7 +62,7 @@ def check_faces(sc, dimension):
     
 def get_simplex(data, l, u,  dimension):
     '''
-    From data in matrix, construct a simplex of a particular dimension; this is for each distance d. NOT !!!! OPTIMIZED !!!!
+    From data in matrix, construct a simplex of a particular dimension; this is for each distance d. NOT !!!! OPTIMIZED !!!! Also, only for 1-4 dimensional faces. TODO: make n-dimensional.
     '''
     if (l > u):
         return "ERROR: Lower bound must be less than upper bound"
@@ -93,10 +99,6 @@ def get_simplex(data, l, u,  dimension):
                 if (K!= ()):
                     t = get_union(temp[i], temp[j])
                     simplex.append(t)
-
-    '''
-    TODO: We also need to make sure that the faces of this complex actually make sense.
-    '''
     if (dimension == 3):
         temp1 = []
         for i in range(0, len(data)):
@@ -183,15 +185,16 @@ if __name__ == "__main__":
     #print("H1: " + str(H1))
     #print("H2: " + str(H2))
 
+    print("--------------- S T A T S ---------------") 
     print("Dimension of SC: " + str(Complex.dimension))
     print("Rank H0: " + str(Complex.compute_homology_rank(1)))
     print("Rank H1: " + str(Complex.compute_homology_rank(2)))
     print("Rank H2: " + str(Complex.compute_homology_rank(3)))
-   
     print("Euler Characteristic: " + str(Complex.compute_euler_characterisic()))
-
+    print("--------------- S T A T S ---------------")
 
     '''
+    # A debugger simplicial complex
     Ci = [[(1),(2),(3),(4)], [(1,2),(1,3),(2,4),(2,3),(3,4)]]
     A = SimplicialComplex(Ci)
     
