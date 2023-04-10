@@ -50,7 +50,7 @@ def check_faces(sc, dimension):
                     sc.pchains.remove(chain)
 
     if (sc.get_pchains(dimension) == []):
-        sc.dimension -= 2
+        sc.dimension -= 1
     # now we need to update the pchain list...
     return 0
     
@@ -165,18 +165,13 @@ if __name__ == "__main__":
     distances = get_distances(D1)
 
     # construct the simplices
-    C = [get_simplex(D1, distances[4], distances[67], dim) for dim in range(0,4)]
-    print(C)
+    C = [get_simplex(D1, distances[4], distances[32], dim) for dim in range(0,4)]
     
     # build the simplicial complex
     Complex = SimplicialComplex(C)
-    print(check_faces(Complex, 3))
-
-    ch = Complex.get_pchains(3)
-    for chain in ch:
-        print(chain.mdata)
-
-    p = Complex.get_pchains(2)
+    check_faces(Complex, 4)
+    check_faces(Complex, 3)
+    p = Complex.get_pchains(3)
     for chain in p:
         print(chain.mdata)
     
@@ -188,10 +183,12 @@ if __name__ == "__main__":
     #print("H1: " + str(H1))
     #print("H2: " + str(H2))
 
-    print(Complex.compute_homology_rank(1))
-    print(Complex.compute_homology_rank(2))
+    print("Dimension of SC: " + str(Complex.dimension))
+    print("Rank H0: " + str(Complex.compute_homology_rank(1)))
+    print("Rank H1: " + str(Complex.compute_homology_rank(2)))
+    print("Rank H2: " + str(Complex.compute_homology_rank(3)))
    
-    print(Complex.compute_euler_characterisic())
+    print("Euler Characteristic: " + str(Complex.compute_euler_characterisic()))
 
 
     '''
