@@ -45,9 +45,9 @@ def check_faces(sc, dimension):
     for chain in p:
         S = powerset(chain.mdata)
         for s in S:
-            print(s)
             if s not in nlist and len(s) == dimension - 1:
-                sc.pchains.remove(chain)
+                if (chain in sc.pchains):
+                    sc.pchains.remove(chain)
 
     if (sc.get_pchains(dimension) == []):
         sc.dimension -= 2
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     distances = get_distances(D1)
 
     # construct the simplices
-    C = [get_simplex(D1, distances[4], distances[20], dim) for dim in range(0,4)]
+    C = [get_simplex(D1, distances[4], distances[67], dim) for dim in range(0,4)]
     print(C)
     
     # build the simplicial complex
