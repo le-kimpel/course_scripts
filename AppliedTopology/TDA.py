@@ -28,12 +28,32 @@ def get_intersection(A, B):
     '''
     return tuple(set(A) & set(B))
 
-def check_faces(simplex):
+def check_faces(sc, dimension):
     '''
-    A way to try and remove faces that don't make any logical sense
+    A way to try and remove faces from a simplicial complex that don't make any logical sense
     '''
-    return
+    if (dimension > sc.dimension):
+        return "Dimension out of bounds"
+    p = sc.get_pchains(dimension)
+    k = sc.get_pchains(dimension-1)
 
+    nlist = []
+    
+    for subchain in k:
+        nlist.append(tuple(subchain.mdata))
+
+    for chain in p:
+        S = powerset(chain.mdata)
+        for s in S:
+            print(s)
+            if s not in nlist and len(s) == dimension - 1:
+                sc.pchains.remove(chain)
+
+    if (sc.get_pchains(dimension) == []):
+        sc.dimension -= 2
+    # now we need to update the pchain list...
+    return 0
+    
 def get_simplex(data, l, u,  dimension):
     '''
     From data in matrix, construct a simplex of a particular dimension; this is for each distance d. NOT !!!! OPTIMIZED !!!!
@@ -145,10 +165,21 @@ if __name__ == "__main__":
     distances = get_distances(D1)
 
     # construct the simplices
-    C = [get_simplex(D1, distances[4], distances[23], dim) for dim in range(0,4)]
-
+    C = [get_simplex(D1, distances[4], distances[20], dim) for dim in range(0,4)]
+    print(C)
+    
     # build the simplicial complex
     Complex = SimplicialComplex(C)
+    print(check_faces(Complex, 3))
+
+    ch = Complex.get_pchains(3)
+    for chain in ch:
+        print(chain.mdata)
+
+    p = Complex.get_pchains(2)
+    for chain in p:
+        print(chain.mdata)
+    
     H0 = Complex.compute_homologies(1)
     H1 = Complex.compute_homologies(2)
     H2 = Complex.compute_homologies(3)

@@ -52,6 +52,9 @@ class SimplicialComplex:
     def __init__(self, Cp):
         self.dimension = len(Cp)+1
         self.Cp = Cp
+        for i in Cp:
+            if i == []:
+                self.dimension -= 1
         self.pchains = self.init_pchains()
         return
     def init_pchains(self):
