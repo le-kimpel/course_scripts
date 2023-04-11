@@ -167,7 +167,7 @@ def graph_persistent_homology(sc):
 
 if __name__ == "__main__":
     
-    df1 = pd.read_csv("Data/CDHWdata_2.csv")
+    df1 = pd.read_csv("Data/CDHWdata_5.csv")
     print(df1)
     D1 = rank_order(df1)
     distances = get_distances(D1)
@@ -181,7 +181,7 @@ if __name__ == "__main__":
     H2_hlist = []
     
     # construct the simplices
-    for i in range(1,60):
+    for i in range(0,150):
         C = [get_simplex(D1, 0, distances[i], dim) for dim in range(0,4)]
         #print(C)
         
@@ -202,15 +202,15 @@ if __name__ == "__main__":
         print("Rank H2: " + str(Complex.compute_homology_rank(3)))
         print("Euler Characteristic: " + str(Complex.compute_euler_characterisic()))
         print("--------------- S T A T S ---------------")
-
+        
         H0list.append(distances[i])
         H1list.append(distances[i])
         H2list.append(distances[i])
-
+    
         H0_hlist.append(Complex.compute_homology_rank(1))
         H1_hlist.append(Complex.compute_homology_rank(2))
         H2_hlist.append(Complex.compute_homology_rank(3))
-
+        
     # try graphing the persistent homologies!
     plt.scatter(H0list, H0_hlist, color='r')
     plt.scatter(H1list, H1_hlist, color='g')
@@ -220,12 +220,12 @@ if __name__ == "__main__":
     labels = ['H_0', 'H_1', 'H_2']
     plt.legend(labels)
     plt.show()
-        
+    
     '''
     # A debugger simplicial complex
     Ci = [[(1),(2),(3),(4)], [(1,2),(1,3),(2,4),(2,3),(3,4)]]
     A = SimplicialComplex(Ci)
-    
+        
     
     H0 = A.compute_homologies(1)
     H1 = A.compute_homologies(2)
