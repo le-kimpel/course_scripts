@@ -1,11 +1,23 @@
-from scipy import stats
+from scipy import stats, integrate
+import pywt
 import numpy as np
 import math
 
 def doppler(x, sigma):
     return math.sqrt(x * (1-x)) * math.sin(float(2.1 * math.pi)/float(x + 0.05)) + sigma * np.random.normal(0,1,1)
 
+def integrand(x, sigma, j):
+    return math.sqrt(x * (1-x)) * math.sin(float(2.1 * math.pi)/float(x + 0.05)) * math.sqrt(2) * math.cos(math.pi * j * x)
 
+def cosine_basis(J, X, sigma):
+    I = []
+    for x in X:
+        sum_ = 0
+        for j in range(0, J):
+            sum_ += integrate.quad(integrand, 0, 1, args=(sigma, j))[0]
+        I.append(sum_)
+    return I
+            
 # initial setup
 n = 1024
 sigma = 0.1
@@ -17,3 +29,11 @@ X = np.array(X)
 # generate data
 Y = [doppler(x, sigma) for x in X]
 
+# confidence bands
+J = 5
+
+# fit the curve using the cosine basis method
+curve = cosine_basis(J, Y, sigma)
+
+# now use Haar wavelets
+wavelet = pywt.Wavelet('Haar')
