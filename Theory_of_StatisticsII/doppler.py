@@ -17,7 +17,7 @@ def cosine_basis(J, sigma):
         sum_ += integrate.quad(integrand, 0, 1, args=(sigma, j))[0]
         I.append(sum_)
     return I
-            
+
 # initial setup
 n = 1024
 sigma = 0.1
@@ -28,15 +28,18 @@ for i in range(1, n+1):
 # generate data
 Y = [doppler(x, sigma) for x in X]
 
-# confidence bands from 10 ... 100
+# use values of J from 10...100
 J = np.arange(10, 110, 10)
 for j in J:
 
     # fit the curve using the cosine basis method
-    curve = cosine_basis(j, sigma)
+    curve = np.array(cosine_basis(j, sigma))
     M = np.arange(1, j+1, 1)
 
-    plt.plot(M, curve)
+    fig, ax = plt.subplots()
+    ax.plot(M, curve)
+    # build the confidence bands...
+    ax.fill_between(M, curve - 0.05*curve , curve + curve*(0.05), color='r', alpha=0.2)
     plt.show()
 
 # now use Haar wavelets
