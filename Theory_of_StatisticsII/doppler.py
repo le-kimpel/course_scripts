@@ -28,16 +28,26 @@ for i in range(1, n+1):
 # generate data
 Y = [doppler(x, sigma) for x in X]
 
-# confidence bands
-J = 100
+# confidence bands from 10 ... 100
+J = np.arange(10, 110, 10)
+for j in J:
 
-# fit the curve using the cosine basis method
-curve = cosine_basis(J, sigma)
-print(curve)
-M = np.arange(1, J+1, 1)
+    # fit the curve using the cosine basis method
+    curve = cosine_basis(j, sigma)
+    M = np.arange(1, j+1, 1)
 
-plt.plot(M, curve)
-plt.show()
+    plt.plot(M, curve)
+    plt.show()
 
 # now use Haar wavelets
-wavelet = pywt.Wavelet('Haar')
+cA, cD = pywt.dwt(Y, 'Haar')
+plt.plot(cA)
+plt.xlabel("Num. Samples")
+plt.ylabel("Approximation Coefficient (cA)")
+plt.show()
+
+
+plt.plot(cD)
+plt.xlabel("Num. Samples")
+plt.ylabel("Detailed Coefficient (cD)")
+plt.show()
